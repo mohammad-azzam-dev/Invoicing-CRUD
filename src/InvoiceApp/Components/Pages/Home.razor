@@ -1,0 +1,11 @@
+@page "/"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+<PageTitle>Dashboard - Invoice Manager</PageTitle>
+
+<RadzenText TextStyle="TextStyle.H3">Dashboard</RadzenText>
+<RadzenText TextStyle="TextStyle.Body1" class="rz-mt-2">
+    Welcome to Invoice Manager. Use the sidebar to navigate to invoices.
+</RadzenText>

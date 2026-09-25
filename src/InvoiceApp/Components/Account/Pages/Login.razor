@@ -1,0 +1,67 @@
+@page "/account/login"
+@using InvoiceApp
+@using InvoiceApp.Components.Account.Forms
+
+<PageTitle>Log in - Invoice Manager</PageTitle>
+
+<AuthorizeView Context="auth">
+    <Authorized>
+        <RedirectToDashboard />
+    </Authorized>
+    <NotAuthorized>
+        <RadzenRow class="rz-mx-auto rz-my-12 auth-row" Style="max-width: 900px;">
+            <RadzenColumn Size="12" SizeMD="6">
+                <RadzenCard class="rz-shadow-6 rz-p-12" Style="height: 100%; background: linear-gradient(135deg, #1a7f5a 0%, #1976d2 100%); border-radius: 1rem 0 0 1rem;">
+                    <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H1" class="rz-color-white rz-mb-4">
+                        Welcome!
+                    </RadzenText>
+                    <RadzenText TextStyle="TextStyle.H6" class="rz-color-white rz-mb-2">
+                        Invoice Manager
+                    </RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-white">
+                        Sign in to manage your invoices and keep your business organized.
+                    </RadzenText>
+                </RadzenCard>
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="6">
+                <RadzenCard class="rz-shadow-6 rz-p-12" Style="border-radius: 0 1rem 1rem 0;">
+                    <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" class="rz-mb-6">
+                        Login
+                    </RadzenText>
+                    <StatusMessage Message="@errorMessage" />
+                    <EditForm EditContext="editContext" method="post" OnValidSubmit="LoginUser" FormName="login">
+                        <DataAnnotationsValidator />
+                        <RadzenStack Gap="1rem">
+                            <RadzenFormField Text="Email" Variant="Variant.Outlined" Style="width: 100%;">
+                                <ChildContent>
+                                    <InputText @bind-Value="Input.Email" class="rz-textbox" style="width: 100%;" name="Input.Email" />
+                                </ChildContent>
+                                <Helper>
+                                    <ValidationMessage For="() => Input.Email" />
+                                </Helper>
+                            </RadzenFormField>
+                            <RadzenFormField Text="Password" Variant="Variant.Outlined" Style="width: 100%;">
+                                <ChildContent>
+                                    <InputText type="password" @bind-Value="Input.Password" class="rz-textbox" style="width: 100%;" name="Input.Password" />
+                                </ChildContent>
+                                <Helper>
+                                    <ValidationMessage For="() => Input.Password" />
+                                </Helper>
+                            </RadzenFormField>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <InputCheckbox @bind-Value="Input.RememberMe" name="Input.RememberMe" class="form-check-input darker-border-checkbox" />
+                                <label for="Input.RememberMe" style="cursor: pointer;">Remember me</label>
+                            </div>
+                            <RadzenButton ButtonType="ButtonType.Submit" Text="Log in" Style="width: 100%;" />
+                        </RadzenStack>
+                    </EditForm>
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-4" Style="text-align: center;">
+                        <a href="@(NavigationManager.GetUriWithQueryParameters(AppRoutes.Account.Register, new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">
+                            Register as a new user
+                        </a>
+                    </RadzenText>
+                </RadzenCard>
+            </RadzenColumn>
+        </RadzenRow>
+    </NotAuthorized>
+</AuthorizeView>
