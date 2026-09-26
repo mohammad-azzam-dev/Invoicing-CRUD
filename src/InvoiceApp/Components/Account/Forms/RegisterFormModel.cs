@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using InvoiceApp.Components.Shared;
 using InvoiceApp.Features.Account.Dtos;
 
 namespace InvoiceApp.Components.Account.Forms;
 
-public class RegisterFormModel
+public class RegisterFormModel : IFormModel<RegisterDto>
 {
     [Required(ErrorMessage = "Email is required.")]
     [EmailAddress(ErrorMessage = "Invalid email format.")]
@@ -24,5 +25,8 @@ public class RegisterFormModel
     [Compare("Password", ErrorMessage = "Passwords do not match.")]
     public string ConfirmPassword { get; set; } = "";
 
-    public RegisterDto ToDto() => new(Email, Password, ConfirmPassword);
+    public RegisterDto ToDto()
+    {
+        return new RegisterDto(Email, Password, ConfirmPassword);
+    }
 }

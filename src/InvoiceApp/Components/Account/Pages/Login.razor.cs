@@ -44,19 +44,19 @@ public partial class Login
 
     private async Task LoginUser()
     {
-        var result = await AuthService.LoginAsync(Input.ToDto());
+        var result = await AuthService.LoginAsync(this.Input.ToDto());
 
         if (result.Succeeded)
         {
             RedirectManager.RedirectTo(ReturnUrl);
+            return;
         }
-        else if (result.IsLockedOut)
+        if (result.IsLockedOut)
         {
             errorMessage = "Account locked out.";
+            return;
         }
-        else
-        {
-            errorMessage = "Invalid login attempt.";
-        }
+        errorMessage = "Invalid login attempt.";
+        return;
     }
 }

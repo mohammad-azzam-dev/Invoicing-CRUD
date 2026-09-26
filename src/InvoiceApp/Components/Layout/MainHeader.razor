@@ -1,0 +1,32 @@
+@using InvoiceApp
+
+<RadzenHeader>
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0" class="rz-p-2">
+        <AuthorizeView>
+            <Authorized>
+                <RadzenText TextStyle="TextStyle.H6" class="rz-m-0 rz-ml-2 text-white">Welcome to Invoice Manager, @context.User.Identity?.Name</RadzenText>
+            </Authorized>
+            <NotAuthorized>
+                <RadzenText TextStyle="TextStyle.H6" class="rz-m-0 rz-ml-2 text-white">Invoice Manager</RadzenText>
+            </NotAuthorized>
+        </AuthorizeView>
+        <div style="flex: 1"></div>
+        <AuthorizeView>
+            <Authorized>
+                <form action="@AppRoutes.Account.Logout" method="post">
+                    <AntiforgeryToken />
+                    <input type="hidden" name="ReturnUrl" value="@AppRoutes.Home" />
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="Logout" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+                </form>
+            </Authorized>
+            <NotAuthorized>
+                <RadzenButton Text="Login" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" Click="@(() => NavigationManager.NavigateTo(AppRoutes.Account.Login))" />
+            </NotAuthorized>
+        </AuthorizeView>
+    </RadzenStack>
+</RadzenHeader>
+
+@code {
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+}

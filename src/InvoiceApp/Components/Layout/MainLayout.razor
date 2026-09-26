@@ -1,53 +1,17 @@
 @inherits LayoutComponentBase
-@using InvoiceApp
 
-<RadzenLayout>
-    <RadzenHeader>
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0" class="rz-p-2">
-            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
-            <RadzenText TextStyle="TextStyle.H5" class="rz-m-0 rz-ml-2">Invoice Manager</RadzenText>
-            <div style="flex: 1"></div>
-            <AuthorizeView>
-                <Authorized>
-                    <RadzenText TextStyle="TextStyle.Body2" class="rz-mr-2">@context.User.Identity?.Name</RadzenText>
-                    <form action="@AppRoutes.Account.Logout" method="post">
-                        <AntiforgeryToken />
-                        <input type="hidden" name="ReturnUrl" value="@AppRoutes.Home" />
-                        <RadzenButton ButtonType="ButtonType.Submit" Text="Logout" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
-                    </form>
-                </Authorized>
-                <NotAuthorized>
-                    <RadzenButton Text="Login" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" Click="@(() => NavigationManager.NavigateTo(AppRoutes.Account.Login))" />
-                </NotAuthorized>
-            </AuthorizeView>
-        </RadzenStack>
-    </RadzenHeader>
-    <RadzenSidebar @bind-Expanded="@sidebarExpanded">
-        <RadzenPanelMenu>
-            <RadzenPanelMenuItem Text="Dashboard" Icon="dashboard" Path="@AppRoutes.Home" />
-            <RadzenPanelMenuItem Text="Invoices" Icon="receipt_long" Path="@AppRoutes.Invoices" />
-        </RadzenPanelMenu>
-    </RadzenSidebar>
-    <RadzenBody>
-        <div class="rz-p-4">
-            @Body
-        </div>
-    </RadzenBody>
-</RadzenLayout>
+<div class="app-layout">
+    <MainHeader />
+    <MainSidebar />
+    <main class="main-content" style="position: fixed; top: 51px; left: 250px; right: 0; bottom: 0; overflow: auto; padding: 1rem; background: #f8f9fa; margin: 0;">
+        @Body
+    </main>
+</div>
 
-<RadzenNotification />
-<RadzenDialog />
-<RadzenTooltip />
+<RadzenComponents @rendermode="InteractiveServer" />
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
     <a href="." class="reload">Reload</a>
     <span class="dismiss">X</span>
 </div>
-
-@code {
-    private bool sidebarExpanded = true;
-
-    [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
-}

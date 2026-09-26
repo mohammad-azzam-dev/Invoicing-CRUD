@@ -1,0 +1,14 @@
+.app-layout {
+    min-height: 100vh;
+}
+
+.main-content {
+    position: fixed;
+    top: 51px;
+    left: 250px;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+    padding: 1rem;
+    background: #f8f9fa;
+}

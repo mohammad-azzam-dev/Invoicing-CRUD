@@ -85,3 +85,46 @@ h1:focus {
 .auth-row {
     gap: unset;
 }
+
+.text-white {
+    color: #fff;
+}
+
+/* App layout */
+.app-layout {
+    min-height: 100vh;
+}
+
+/* Main content positioning - fixed to the right of sidebar */
+.main-content {
+    position: fixed;
+    top: 51px;
+    left: 250px;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+    padding: 1rem;
+    background: #f8f9fa;
+}
+
+/* Fixed header */
+.rz-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 51px;
+    z-index: 1100;
+}
+
+/* Fixed sidebar - always 250px wide */
+.rz-sidebar {
+    position: fixed;
+    top: 51px;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
