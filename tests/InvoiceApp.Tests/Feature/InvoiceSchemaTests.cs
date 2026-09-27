@@ -1,8 +1,8 @@
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using InvoiceApp.Data;
 using InvoiceApp.Domain;
 using InvoiceApp.Tests.TestSupport;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Shouldly;
 
 namespace InvoiceApp.Tests.Feature;
@@ -16,9 +16,7 @@ public sealed class InvoiceSchemaTests
         await using var connection = new SqliteConnection("DataSource=:memory:");
         await connection.OpenAsync();
 
-        var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlite(connection)
-            .Options;
+        var options = new DbContextOptionsBuilder<AppDbContext>().UseSqlite(connection).Options;
 
         await using var db = new AppDbContext(options);
 
@@ -73,10 +71,20 @@ public sealed class InvoiceSchemaTests
         await using var db = await testDb.Factory.CreateDbContextAsync();
 
         // Create customers
-        var draftCustomer = Customer.Create("Draft", "555-0001", "draft@test.com", "Draft Customer");
+        var draftCustomer = Customer.Create(
+            "Draft",
+            "555-0001",
+            "draft@test.com",
+            "Draft Customer"
+        );
         var sentCustomer = Customer.Create("Sent", "555-0002", "sent@test.com", "Sent Customer");
         var paidCustomer = Customer.Create("Paid", "555-0003", "paid@test.com", "Paid Customer");
-        var cancelledCustomer = Customer.Create("Cancelled", "555-0004", "cancelled@test.com", "Cancelled Customer");
+        var cancelledCustomer = Customer.Create(
+            "Cancelled",
+            "555-0004",
+            "cancelled@test.com",
+            "Cancelled Customer"
+        );
         db.Customers.AddRange(draftCustomer, sentCustomer, paidCustomer, cancelledCustomer);
         await db.SaveChangesAsync();
 
@@ -102,10 +110,18 @@ public sealed class InvoiceSchemaTests
         await db.SaveChangesAsync();
 
         // Act
-        var draftInvoices = await db.Invoices.Where(i => i.Status == InvoiceStatus.Draft).ToListAsync();
-        var sentInvoices = await db.Invoices.Where(i => i.Status == InvoiceStatus.Sent).ToListAsync();
-        var paidInvoices = await db.Invoices.Where(i => i.Status == InvoiceStatus.Paid).ToListAsync();
-        var cancelledInvoices = await db.Invoices.Where(i => i.Status == InvoiceStatus.Cancelled).ToListAsync();
+        var draftInvoices = await db
+            .Invoices.Where(i => i.Status == InvoiceStatus.Draft)
+            .ToListAsync();
+        var sentInvoices = await db
+            .Invoices.Where(i => i.Status == InvoiceStatus.Sent)
+            .ToListAsync();
+        var paidInvoices = await db
+            .Invoices.Where(i => i.Status == InvoiceStatus.Paid)
+            .ToListAsync();
+        var cancelledInvoices = await db
+            .Invoices.Where(i => i.Status == InvoiceStatus.Cancelled)
+            .ToListAsync();
 
         // Assert
         draftInvoices.Count.ShouldBe(1);
@@ -186,28 +202,46 @@ public sealed class InvoiceSchemaTests
         await using var testDb = await TestDatabase.CreateAsync();
         await using var db = await testDb.Factory.CreateDbContextAsync();
 
-        var overdueCustomer = Customer.Create("Test", "555-0001", "overdue@test.com", "Overdue Customer");
-        var notOverdueCustomer = Customer.Create("Test", "555-0002", "notoverdue@test.com", "Not Overdue Customer");
+        var overdueCustomer = Customer.Create(
+            "Test",
+            "555-0001",
+            "overdue@test.com",
+            "Overdue Customer"
+        );
+        var notOverdueCustomer = Customer.Create(
+            "Test",
+            "555-0002",
+            "notoverdue@test.com",
+            "Not Overdue Customer"
+        );
         db.Customers.AddRange(overdueCustomer, notOverdueCustomer);
         await db.SaveChangesAsync();
 
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
         // Create an overdue sent invoice
-        var overdueInvoice = Invoice.Create(overdueCustomer.Id, today.AddDays(-30), today.AddDays(-5), 21m).Value!;
+        var overdueInvoice = Invoice
+            .Create(overdueCustomer.Id, today.AddDays(-30), today.AddDays(-5), 21m)
+            .Value!;
         overdueInvoice.MarkAsSent(1);
         db.Invoices.Add(overdueInvoice);
 
         // Create a non-overdue sent invoice
-        var notOverdueInvoice = Invoice.Create(notOverdueCustomer.Id, today, today.AddDays(30), 21m).Value!;
+        var notOverdueInvoice = Invoice
+            .Create(notOverdueCustomer.Id, today, today.AddDays(30), 21m)
+            .Value!;
         notOverdueInvoice.MarkAsSent(1);
         db.Invoices.Add(notOverdueInvoice);
 
         await db.SaveChangesAsync();
 
         // Act
-        var sentInvoices = await db.Invoices.Where(i => i.Status == InvoiceStatus.Sent).ToListAsync();
-        var overdueInvoices = sentInvoices.Where(i => InvoiceCalculations.IsOverdue(i, today)).ToList();
+        var sentInvoices = await db
+            .Invoices.Where(i => i.Status == InvoiceStatus.Sent)
+            .ToListAsync();
+        var overdueInvoices = sentInvoices
+            .Where(i => InvoiceCalculations.IsOverdue(i, today))
+            .ToList();
 
         // Assert
         overdueInvoices.Count.ShouldBe(1);

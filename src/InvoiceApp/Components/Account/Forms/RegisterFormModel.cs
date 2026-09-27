@@ -12,11 +12,17 @@ public class RegisterFormModel : IFormModel<RegisterDto>
     public string Email { get; set; } = "";
 
     [Required(ErrorMessage = "Password is required.")]
-    [StringLength(100, ErrorMessage = "Password must be at least {2} characters long.", MinimumLength = 8)]
+    [StringLength(
+        100,
+        ErrorMessage = "Password must be at least {2} characters long.",
+        MinimumLength = 8
+    )]
     [DataType(DataType.Password)]
     [Display(Name = "Password")]
-    [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).+$",
-        ErrorMessage = "Password must contain at least one uppercase letter, one number, and one special character.")]
+    [RegularExpression(
+        @"^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).+$",
+        ErrorMessage = "Password must contain at least one uppercase letter, one number, and one special character."
+    )]
     public string Password { get; set; } = "";
 
     [Required(ErrorMessage = "Confirm password is required.")]

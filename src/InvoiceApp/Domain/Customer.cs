@@ -19,7 +19,8 @@ public sealed class Customer
         string phone,
         string email,
         string? companyName = null,
-        string? address = null)
+        string? address = null
+    )
     {
         return new Customer
         {
@@ -27,7 +28,7 @@ public sealed class Customer
             Phone = phone.Trim(),
             Email = email.Trim(),
             CompanyName = companyName?.Trim(),
-            Address = address?.Trim()
+            Address = address?.Trim(),
         };
     }
 }

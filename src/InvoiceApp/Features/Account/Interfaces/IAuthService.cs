@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Identity;
 using InvoiceApp.Features.Account.Dtos;
+using Microsoft.AspNetCore.Identity;
 
 namespace InvoiceApp.Features.Account.Interfaces;
 

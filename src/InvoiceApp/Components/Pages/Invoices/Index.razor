@@ -9,7 +9,7 @@
 
 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" class="rz-mb-4">
     <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H1" class="rz-m-0">Invoices</RadzenText>
-    <RadzenButton Text="New Invoice" Icon="add" ButtonStyle="ButtonStyle.Primary" Disabled="true" title="Coming soon" />
+    <RadzenButton Text="New Invoice" Icon="add" ButtonStyle="ButtonStyle.Primary" Click="@(() => Navigation.NavigateTo("/invoices/new"))" />
 </RadzenStack>
 
 <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" class="rz-mb-4" Wrap="FlexWrap.Wrap">
@@ -40,20 +40,9 @@
                 ShowPagingSummary="true"
                 PagingSummaryFormat="Showing {0} to {1} of {2} invoices">
     <EmptyTemplate>
-        <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" class="rz-p-8">
-            <RadzenIcon Icon="receipt_long" Style="font-size: 4rem; color: var(--rz-text-disabled-color);" />
-            <RadzenText TextStyle="TextStyle.H6" Style="color: var(--rz-text-disabled-color);">No invoices found</RadzenText>
-            <RadzenText TextStyle="TextStyle.Body2" Style="color: var(--rz-text-disabled-color);">
-                @if (!string.IsNullOrWhiteSpace(_searchText) || _selectedStatus.HasValue)
-                {
-                    <text>Try adjusting your search or filter criteria.</text>
-                }
-                else
-                {
-                    <text>Create your first invoice to get started.</text>
-                }
-            </RadzenText>
-        </RadzenStack>
+        <EmptyState Icon="receipt_long"
+                    Message="No invoices found"
+                    Hint="@(string.IsNullOrWhiteSpace(_searchText) && !_selectedStatus.HasValue ? "Create your first invoice to get started." : "Try adjusting your search or filter criteria.")" />
     </EmptyTemplate>
     <LoadingTemplate>
         <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" class="rz-p-8">
@@ -61,6 +50,13 @@
         </RadzenStack>
     </LoadingTemplate>
     <Columns>
+        <RadzenDataGridColumn TItem="InvoiceListItemDto" Title="" Width="50px" Sortable="false" TextAlign="TextAlign.Center">
+            <Template Context="invoice">
+                <ActionsMenu Items="@GetActionsForInvoice(invoice)"
+                             Visible="@GetActionsForInvoice(invoice).Any()"
+                             OnAction="@(action => OnActionSelected(invoice, action))" />
+            </Template>
+        </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="InvoiceListItemDto" Property="Number" Title="Number" Width="120px" />
         <RadzenDataGridColumn TItem="InvoiceListItemDto" Property="CustomerName" Title="Customer" />
         <RadzenDataGridColumn TItem="InvoiceListItemDto" Property="IssueDate" Title="Issue Date" Width="120px">
@@ -70,14 +66,7 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="InvoiceListItemDto" Property="DueDate" Title="Due Date" Width="120px">
             <Template Context="invoice">
-                @if (invoice.IsOverdue)
-                {
-                    <span style="color: var(--rz-danger); font-weight: bold;" title="Overdue">@invoice.DueDate.ToString("dd MMM yyyy")</span>
-                }
-                else
-                {
-                    @invoice.DueDate.ToString("dd MMM yyyy")
-                }
+                <DateBadge Date="@invoice.DueDate" IsOverdue="@invoice.IsOverdue" />
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="InvoiceListItemDto" Property="Status" Title="Status" Width="120px">
@@ -89,15 +78,6 @@
         <RadzenDataGridColumn TItem="InvoiceListItemDto" Property="Total" Title="Total" Width="120px" TextAlign="TextAlign.End">
             <Template Context="invoice">
                 @invoice.Total.ToString("C2")
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="InvoiceListItemDto" Title="Actions" Width="80px" Sortable="false" TextAlign="TextAlign.Center">
-            <Template Context="invoice">
-                @if (invoice.Status == InvoiceStatus.Draft)
-                {
-                    <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Variant="Variant.Text" Size="ButtonSize.Small"
-                                  Click="@(() => DeleteInvoiceAsync(invoice))" title="Delete invoice" />
-                }
             </Template>
         </RadzenDataGridColumn>
     </Columns>

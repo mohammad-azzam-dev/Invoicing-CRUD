@@ -1,26 +1,34 @@
 using FluentValidation;
-using Microsoft.AspNetCore.Identity;
 using InvoiceApp.Features.Account.Dtos;
 using InvoiceApp.Features.Account.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace InvoiceApp.Features.Account.Services;
 
 public sealed class AuthService(
     SignInManager<IdentityUser> signInManager,
     IValidator<LoginDto> validator,
-    ILogger<AuthService> logger) : IAuthService
+    ILogger<AuthService> logger
+) : IAuthService
 {
     public async Task<SignInResult> LoginAsync(LoginDto dto)
     {
         var validationResult = await validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
-            logger.LogWarning("Login validation failed: {Errors}",
-                string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+            logger.LogWarning(
+                "Login validation failed: {Errors}",
+                string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))
+            );
             return SignInResult.Failed;
         }
 
-        var result = await signInManager.PasswordSignInAsync(dto.Email, dto.Password, dto.RememberMe, lockoutOnFailure: false);
+        var result = await signInManager.PasswordSignInAsync(
+            dto.Email,
+            dto.Password,
+            dto.RememberMe,
+            lockoutOnFailure: false
+        );
 
         if (result.IsLockedOut)
         {

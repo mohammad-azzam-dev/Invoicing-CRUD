@@ -1,0 +1,19 @@
+@if (IsOverdue)
+{
+    <span style="color: var(--rz-danger); font-weight: bold;" title="Overdue">@Date.ToString(Format)</span>
+}
+else
+{
+    @Date.ToString(Format)
+}
+
+@code {
+    [Parameter]
+    public DateOnly Date { get; set; }
+
+    [Parameter]
+    public bool IsOverdue { get; set; }
+
+    [Parameter]
+    public string Format { get; set; } = "dd MMM yyyy";
+}

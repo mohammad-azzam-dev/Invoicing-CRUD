@@ -1,9 +1,4 @@
 using FluentValidation;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Radzen;
 using InvoiceApp.Components;
 using InvoiceApp.Components.Account;
 using InvoiceApp.Data;
@@ -13,32 +8,43 @@ using InvoiceApp.Features.Account.Services;
 using InvoiceApp.Features.Account.Validators;
 using InvoiceApp.Features.Invoices.Interfaces;
 using InvoiceApp.Features.Invoices.Services;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Radzen;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
 builder.Services.AddRadzenComponents();
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityRedirectManager>();
-builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+builder.Services.AddScoped<
+    AuthenticationStateProvider,
+    IdentityRevalidatingAuthenticationStateProvider
+>();
 
-builder.Services.AddAuthentication(options =>
+builder
+    .Services.AddAuthentication(options =>
     {
         options.DefaultScheme = IdentityConstants.ApplicationScheme;
         options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
     })
     .AddIdentityCookies();
 
-string connectionString = builder.Configuration.GetConnectionString("Default") ?? throw new InvalidOperationException("Connection string 'Default' not found.");
+string connectionString =
+    builder.Configuration.GetConnectionString("Default")
+    ?? throw new InvalidOperationException("Connection string 'Default' not found.");
 
-builder.Services.AddDbContextFactory<AppDbContext>(options =>
-    options.UseSqlite(connectionString));
+builder.Services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentityCore<IdentityUser>(options =>
+builder
+    .Services.AddIdentityCore<IdentityUser>(options =>
     {
         options.SignIn.RequireConfirmedAccount = false;
         options.User.RequireUniqueEmail = true;
@@ -92,8 +98,12 @@ if (!app.Environment.IsEnvironment("Testing"))
                 }
                 catch (IOException)
                 {
-                    Console.WriteLine($"[Dev] Could not delete {Path.GetFileName(file)} - file is locked.");
-                    Console.WriteLine("[Dev] Close DB Browser or other tools to enable fresh database on next restart.");
+                    Console.WriteLine(
+                        $"[Dev] Could not delete {Path.GetFileName(file)} - file is locked."
+                    );
+                    Console.WriteLine(
+                        "[Dev] Close DB Browser or other tools to enable fresh database on next restart."
+                    );
                     break; // Skip this file and continue
                 }
             }
@@ -129,8 +139,7 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();

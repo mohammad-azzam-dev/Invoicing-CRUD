@@ -8,5 +8,5 @@ public enum InvoiceSortField
     DueDate,
     Status,
     ItemCount,
-    Total
+    Total,
 }

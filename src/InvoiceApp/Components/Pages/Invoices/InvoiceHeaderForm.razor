@@ -1,0 +1,98 @@
+@using InvoiceApp.Components.Pages.Invoices.Forms
+@using InvoiceApp.Components.Shared
+
+<RadzenFieldset Text="Invoice Details">
+    <RadzenStack Gap="1rem">
+        <RadzenRow Gap="1rem">
+            <RadzenColumn Size="12" SizeMD="6">
+                <RadzenFormField Text="Customer" Variant="Variant.Outlined" Style="width: 100%;">
+                    <CustomerDropdown @bind-Value="Model.CustomerId"
+                                      Disabled="@ReadOnly"
+                                      OnChange="@OnChange" />
+                </RadzenFormField>
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="6">
+                <RadzenFormField Text="Tax Rate (%)" Variant="Variant.Outlined" Style="width: 100%;">
+                    <RadzenNumeric @bind-Value="Model.TaxRate"
+                                   Min="0"
+                                   Max="100"
+                                   Step="0.5"
+                                   Disabled="@ReadOnly"
+                                   Style="width: 100%;"
+                                   Change="@(async (decimal _) => await OnChange.InvokeAsync())" />
+                </RadzenFormField>
+            </RadzenColumn>
+        </RadzenRow>
+        <RadzenRow Gap="1rem">
+            <RadzenColumn Size="12" SizeMD="6">
+                <RadzenFormField Text="Issue Date" Variant="Variant.Outlined" Style="width: 100%;">
+                    <RadzenDatePicker @bind-Value="_issueDateValue"
+                                      DateFormat="dd MMM yyyy"
+                                      Disabled="@ReadOnly"
+                                      Style="width: 100%;"
+                                      Change="@OnIssueDateChanged" />
+                </RadzenFormField>
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="6">
+                <RadzenFormField Text="Due Date" Variant="Variant.Outlined" Style="width: 100%;">
+                    <RadzenDatePicker @bind-Value="_dueDateValue"
+                                      DateFormat="dd MMM yyyy"
+                                      Min="@_issueDateValue"
+                                      Disabled="@ReadOnly"
+                                      Style="width: 100%;"
+                                      Change="@OnFieldChanged" />
+                </RadzenFormField>
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenStack>
+</RadzenFieldset>
+
+@code {
+    [Parameter, EditorRequired]
+    public InvoiceFormModel Model { get; set; } = null!;
+
+    [Parameter]
+    public bool ReadOnly { get; set; }
+
+    [Parameter]
+    public EventCallback OnChange { get; set; }
+
+    private DateTime? _issueDateValue;
+    private DateTime? _dueDateValue;
+
+    protected override void OnParametersSet()
+    {
+        _issueDateValue = Model.IssueDate.ToDateTime(TimeOnly.MinValue);
+        _dueDateValue = Model.DueDate.ToDateTime(TimeOnly.MinValue);
+    }
+
+    private async Task OnIssueDateChanged()
+    {
+        if (_issueDateValue.HasValue)
+        {
+            Model.IssueDate = DateOnly.FromDateTime(_issueDateValue.Value);
+
+            if (_dueDateValue.HasValue && _dueDateValue.Value < _issueDateValue.Value)
+            {
+                _dueDateValue = _issueDateValue.Value.AddDays(30);
+                Model.DueDate = DateOnly.FromDateTime(_dueDateValue.Value);
+            }
+        }
+
+        await OnFieldChanged();
+    }
+
+    private async Task OnFieldChanged()
+    {
+        if (_issueDateValue.HasValue)
+        {
+            Model.IssueDate = DateOnly.FromDateTime(_issueDateValue.Value);
+        }
+        if (_dueDateValue.HasValue)
+        {
+            Model.DueDate = DateOnly.FromDateTime(_dueDateValue.Value);
+        }
+
+        await OnChange.InvokeAsync();
+    }
+}

@@ -11,4 +11,6 @@ public sealed record InvoiceListItemDto(
     InvoiceStatus Status,
     bool IsOverdue,
     int ItemCount,
-    decimal Total);
+    decimal Total,
+    IReadOnlyList<InvoiceStatus> AllowedNextStatuses
+);

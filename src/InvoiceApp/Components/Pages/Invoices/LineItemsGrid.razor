@@ -1,0 +1,101 @@
+@using InvoiceApp.Components.Pages.Invoices.Forms
+
+<RadzenFieldset Text="Line Items">
+    <RadzenStack Gap="1rem">
+        @if (!ReadOnly)
+        {
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+                <RadzenButton Text="Add Line Item"
+                              Icon="add"
+                              ButtonStyle="ButtonStyle.Success"
+                              Variant="Variant.Outlined"
+                              Click="@AddLineItem" />
+            </RadzenStack>
+        }
+
+        <RadzenDataGrid @ref="_grid"
+                        TItem="LineItemFormModel"
+                        Data="@Items"
+                        AllowSorting="false"
+                        AllowPaging="false"
+                        EditMode="DataGridEditMode.Single"
+                        RowUpdate="@OnRowUpdate"
+                        RowCreate="@OnRowCreate"
+                        Density="Density.Default">
+            <EmptyTemplate>
+                <EmptyState Icon="receipt"
+                            Message="No line items yet"
+                            Hint="@(ReadOnly ? null : "Click \"Add Line Item\" to add items to this invoice")" />
+            </EmptyTemplate>
+            <Columns>
+                <RadzenDataGridColumn TItem="LineItemFormModel" Property="Description" Title="Description" MinWidth="200px">
+                    <EditTemplate Context="item">
+                        <RadzenTextBox @bind-Value="item.Description" Style="width: 100%;" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="LineItemFormModel" Property="Quantity" Title="Qty" Width="100px" TextAlign="TextAlign.End">
+                    <Template Context="item">
+                        @item.Quantity.ToString("N2")
+                    </Template>
+                    <EditTemplate Context="item">
+                        <RadzenNumeric @bind-Value="item.Quantity" Min="0.01m" Step="1" Style="width: 100%;" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="LineItemFormModel" Property="UnitPrice" Title="Unit Price" Width="120px" TextAlign="TextAlign.End">
+                    <Template Context="item">
+                        @item.UnitPrice.ToString("C2")
+                    </Template>
+                    <EditTemplate Context="item">
+                        <RadzenNumeric @bind-Value="item.UnitPrice" Min="0" Step="0.01m" Format="C2" Style="width: 100%;" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="LineItemFormModel" Property="DiscountPercent" Title="Discount %" Width="110px" TextAlign="TextAlign.End">
+                    <Template Context="item">
+                        @item.DiscountPercent.ToString("N1")%
+                    </Template>
+                    <EditTemplate Context="item">
+                        <RadzenNumeric @bind-Value="item.DiscountPercent" Min="0" Max="100" Step="0.5m" Style="width: 100%;" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="LineItemFormModel" Property="LineTotal" Title="Line Total" Width="120px" TextAlign="TextAlign.End" Sortable="false">
+                    <Template Context="item">
+                        <strong>@item.LineTotal.ToString("C2")</strong>
+                    </Template>
+                    <EditTemplate Context="item">
+                        <strong>@item.LineTotal.ToString("C2")</strong>
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="LineItemFormModel" Title="" Width="120px" Sortable="false" TextAlign="TextAlign.Center" Visible="@(!ReadOnly)">
+                    <Template Context="item">
+                        <RadzenButton Icon="edit"
+                                      ButtonStyle="ButtonStyle.Light"
+                                      Variant="Variant.Flat"
+                                      Size="ButtonSize.Small"
+                                      Click="@(() => EditRow(item))"
+                                      title="Edit" />
+                        <RadzenButton Icon="delete"
+                                      ButtonStyle="ButtonStyle.Danger"
+                                      Variant="Variant.Flat"
+                                      Size="ButtonSize.Small"
+                                      Click="@(() => DeleteRow(item))"
+                                      title="Delete" />
+                    </Template>
+                    <EditTemplate Context="item">
+                        <RadzenButton Icon="check"
+                                      ButtonStyle="ButtonStyle.Success"
+                                      Variant="Variant.Flat"
+                                      Size="ButtonSize.Small"
+                                      Click="@(() => SaveRow(item))"
+                                      title="Save" />
+                        <RadzenButton Icon="close"
+                                      ButtonStyle="ButtonStyle.Light"
+                                      Variant="Variant.Flat"
+                                      Size="ButtonSize.Small"
+                                      Click="@(() => CancelEdit(item))"
+                                      title="Cancel" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenStack>
+</RadzenFieldset>

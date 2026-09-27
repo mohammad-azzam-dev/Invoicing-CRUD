@@ -1,0 +1,41 @@
+@using Microsoft.AspNetCore.Components.Web
+@inject ContextMenuService ContextMenuService
+
+@if (Visible)
+{
+    <RadzenButton Icon="more_vert"
+                  Variant="Variant.Text"
+                  Size="ButtonSize.Small"
+                  Click="@ShowMenu"
+                  class="actions-button" />
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<ActionMenuItem> Items { get; set; } = [];
+
+    [Parameter]
+    public bool Visible { get; set; } = true;
+
+    [Parameter]
+    public EventCallback<string> OnAction { get; set; }
+
+    private void ShowMenu(MouseEventArgs args)
+    {
+        List<ContextMenuItem> menuItems = Items
+            .Select(item => new ContextMenuItem
+            {
+                Text = item.Text,
+                Icon = item.Icon,
+                Value = item.Value
+            })
+            .ToList();
+
+        ContextMenuService.Open(args, menuItems, async (menuArgs) =>
+        {
+            ContextMenuService.Close();
+            string action = menuArgs.Value?.ToString() ?? "";
+            await OnAction.InvokeAsync(action);
+        });
+    }
+}

@@ -4,14 +4,16 @@ namespace InvoiceApp.Domain;
 
 public static class InvoiceStatusRules
 {
-    private static readonly FrozenDictionary<InvoiceStatus, IReadOnlyList<InvoiceStatus>> AllowedTransitions =
-        new Dictionary<InvoiceStatus, IReadOnlyList<InvoiceStatus>>
-        {
-            [InvoiceStatus.Draft] = [InvoiceStatus.Sent, InvoiceStatus.Cancelled],
-            [InvoiceStatus.Sent] = [InvoiceStatus.Paid, InvoiceStatus.Cancelled],
-            [InvoiceStatus.Paid] = [],
-            [InvoiceStatus.Cancelled] = []
-        }.ToFrozenDictionary();
+    private static readonly FrozenDictionary<
+        InvoiceStatus,
+        IReadOnlyList<InvoiceStatus>
+    > AllowedTransitions = new Dictionary<InvoiceStatus, IReadOnlyList<InvoiceStatus>>
+    {
+        [InvoiceStatus.Draft] = [InvoiceStatus.Sent, InvoiceStatus.Cancelled],
+        [InvoiceStatus.Sent] = [InvoiceStatus.Paid, InvoiceStatus.Cancelled],
+        [InvoiceStatus.Paid] = [],
+        [InvoiceStatus.Cancelled] = [],
+    }.ToFrozenDictionary();
 
     public static bool CanTransition(InvoiceStatus from, InvoiceStatus to)
     {

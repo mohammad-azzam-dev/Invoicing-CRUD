@@ -1,0 +1,16 @@
+<RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" class="rz-p-8">
+    <RadzenIcon Icon="error_outline" Style="font-size: 4rem; color: var(--rz-danger);" />
+    <RadzenText TextStyle="TextStyle.H5">@Message</RadzenText>
+    <RadzenButton Text="@ButtonText" Click="@OnClick" />
+</RadzenStack>
+
+@code {
+    [Parameter]
+    public string Message { get; set; } = "Not found";
+
+    [Parameter]
+    public string ButtonText { get; set; } = "Go Back";
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+}

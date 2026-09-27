@@ -10,4 +10,5 @@ internal sealed record InvoiceProjection(
     InvoiceStatus Status,
     int ItemCount,
     decimal Total,
-    bool IsOverdue);
+    bool IsOverdue
+);

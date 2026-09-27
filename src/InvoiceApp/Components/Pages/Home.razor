@@ -1,11 +1,78 @@
 @page "/"
 @using Microsoft.AspNetCore.Authorization
+@using InvoiceApp.Features.Invoices.Dtos
+@using InvoiceApp.Features.Invoices.Interfaces
 @attribute [Authorize]
 @rendermode InteractiveServer
+@inject IInvoiceService InvoiceService
 
 <PageTitle>Dashboard - Invoice Manager</PageTitle>
 
 <RadzenText TextStyle="TextStyle.H3">Dashboard</RadzenText>
-<RadzenText TextStyle="TextStyle.Body1" class="rz-mt-2">
+<RadzenText TextStyle="TextStyle.Body1" class="rz-mt-2 rz-mb-6">
     Welcome to Invoice Manager. Use the sidebar to navigate to invoices.
 </RadzenText>
+
+@if (_stats is not null)
+{
+    <RadzenRow Gap="1rem">
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="4" SizeXL="2">
+            <RadzenCard Style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <RadzenStack Gap="0.5rem" AlignItems="AlignItems.Center">
+                    <RadzenIcon Icon="receipt_long" Style="font-size: 2.5rem; color: white;" />
+                    <RadzenText TextStyle="TextStyle.H3" Style="color: white; margin: 0;">@_stats.Total</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2" Style="color: rgba(255,255,255,0.9);">Total Invoices</RadzenText>
+                </RadzenStack>
+            </RadzenCard>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="4" SizeXL="2">
+            <RadzenCard Style="background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);">
+                <RadzenStack Gap="0.5rem" AlignItems="AlignItems.Center">
+                    <RadzenIcon Icon="edit_note" Style="font-size: 2.5rem; color: white;" />
+                    <RadzenText TextStyle="TextStyle.H3" Style="color: white; margin: 0;">@_stats.Draft</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2" Style="color: rgba(255,255,255,0.9);">Draft</RadzenText>
+                </RadzenStack>
+            </RadzenCard>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="4" SizeXL="2">
+            <RadzenCard Style="background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);">
+                <RadzenStack Gap="0.5rem" AlignItems="AlignItems.Center">
+                    <RadzenIcon Icon="send" Style="font-size: 2.5rem; color: white;" />
+                    <RadzenText TextStyle="TextStyle.H3" Style="color: white; margin: 0;">@_stats.Sent</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2" Style="color: rgba(255,255,255,0.9);">Sent</RadzenText>
+                </RadzenStack>
+            </RadzenCard>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="4" SizeXL="2">
+            <RadzenCard Style="background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);">
+                <RadzenStack Gap="0.5rem" AlignItems="AlignItems.Center">
+                    <RadzenIcon Icon="check_circle" Style="font-size: 2.5rem; color: white;" />
+                    <RadzenText TextStyle="TextStyle.H3" Style="color: white; margin: 0;">@_stats.Paid</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2" Style="color: rgba(255,255,255,0.9);">Paid</RadzenText>
+                </RadzenStack>
+            </RadzenCard>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="4" SizeXL="2">
+            <RadzenCard Style="background: linear-gradient(135deg, #b2bec3 0%, #636e72 100%);">
+                <RadzenStack Gap="0.5rem" AlignItems="AlignItems.Center">
+                    <RadzenIcon Icon="cancel" Style="font-size: 2.5rem; color: white;" />
+                    <RadzenText TextStyle="TextStyle.H3" Style="color: white; margin: 0;">@_stats.Cancelled</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2" Style="color: rgba(255,255,255,0.9);">Cancelled</RadzenText>
+                </RadzenStack>
+            </RadzenCard>
+        </RadzenColumn>
+    </RadzenRow>
+}
+else
+{
+    <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Medium" />
+}
+
+@code {
+    private InvoiceStatsDto? _stats;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _stats = await InvoiceService.GetStatsAsync();
+    }
+}

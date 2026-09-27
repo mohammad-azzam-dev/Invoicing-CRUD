@@ -1,0 +1,59 @@
+@using InvoiceApp.Features.Invoices.Dtos
+@using InvoiceApp.Features.Invoices.Interfaces
+@inject IInvoiceService InvoiceService
+
+<RadzenDropDown @bind-Value="Value"
+                @bind-Value:after="OnValueChanged"
+                Data="@_customers"
+                TextProperty="DisplayName"
+                ValueProperty="Id"
+                Placeholder="Select a customer..."
+                Disabled="@Disabled"
+                Style="width: 100%;"
+                AllowFiltering="true"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                Open="@OnDropdownOpen" />
+
+@code {
+    [Parameter]
+    public int Value { get; set; }
+
+    [Parameter]
+    public EventCallback<int> ValueChanged { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public EventCallback OnChange { get; set; }
+
+    private IReadOnlyList<CustomerLookupDto> _customers = [];
+    private bool _customersLoaded;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCustomersAsync();
+    }
+
+    private async Task OnDropdownOpen()
+    {
+        await LoadCustomersAsync();
+    }
+
+    private async Task LoadCustomersAsync()
+    {
+        if (_customersLoaded)
+        {
+            return;
+        }
+
+        _customers = await InvoiceService.GetCustomersForDropdownAsync();
+        _customersLoaded = true;
+    }
+
+    private async Task OnValueChanged()
+    {
+        await ValueChanged.InvokeAsync(Value);
+        await OnChange.InvokeAsync();
+    }
+}

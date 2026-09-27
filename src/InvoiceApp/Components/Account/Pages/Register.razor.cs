@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Identity;
 using InvoiceApp.Components.Account;
 using InvoiceApp.Components.Account.Forms;
 using InvoiceApp.Features.Account.Interfaces;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Identity;
 
 namespace InvoiceApp.Components.Account.Pages;
 
@@ -26,9 +26,10 @@ public partial class Register
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
-    private string? Message => identityErrors is null
-        ? null
-        : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
+    private string? Message =>
+        identityErrors is null
+            ? null
+            : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
 
     protected override void OnInitialized()
     {

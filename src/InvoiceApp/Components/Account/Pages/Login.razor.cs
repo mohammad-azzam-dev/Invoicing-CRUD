@@ -1,10 +1,10 @@
+using InvoiceApp.Components.Account;
+using InvoiceApp.Components.Account.Forms;
+using InvoiceApp.Features.Account.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Identity;
-using InvoiceApp.Components.Account;
-using InvoiceApp.Components.Account.Forms;
-using InvoiceApp.Features.Account.Interfaces;
 
 namespace InvoiceApp.Components.Account.Pages;
 

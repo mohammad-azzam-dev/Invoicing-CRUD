@@ -1,8 +1,10 @@
-using Microsoft.Extensions.Time.Testing;
+using InvoiceApp.Data;
 using InvoiceApp.Data.Repositories;
 using InvoiceApp.Domain;
 using InvoiceApp.Features.Invoices;
+using InvoiceApp.Features.Invoices.Dtos;
 using InvoiceApp.Tests.TestSupport;
+using Microsoft.Extensions.Time.Testing;
 using Shouldly;
 
 namespace InvoiceApp.Tests.Feature;
@@ -16,7 +18,9 @@ public sealed class InvoiceRepositoryTests
     {
         // Arrange
         await using var testDb = await TestDatabase.CreateAsync();
-        var timeProvider = new FakeTimeProvider(new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero));
+        var timeProvider = new FakeTimeProvider(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
         var repository = new InvoiceRepository(testDb.Factory, timeProvider);
 
         await SeedInvoicesAsync(testDb);
@@ -28,7 +32,9 @@ public sealed class InvoiceRepositoryTests
 
         // Assert
         result.Items.ShouldNotBeEmpty();
-        result.Items.ShouldAllBe(i => i.CustomerName.Contains("Acme", StringComparison.OrdinalIgnoreCase));
+        result.Items.ShouldAllBe(i =>
+            i.CustomerName.Contains("Acme", StringComparison.OrdinalIgnoreCase)
+        );
     }
 
     [Fact]
@@ -36,7 +42,9 @@ public sealed class InvoiceRepositoryTests
     {
         // Arrange
         await using var testDb = await TestDatabase.CreateAsync();
-        var timeProvider = new FakeTimeProvider(new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero));
+        var timeProvider = new FakeTimeProvider(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
         var repository = new InvoiceRepository(testDb.Factory, timeProvider);
 
         await SeedInvoicesAsync(testDb);
@@ -56,7 +64,9 @@ public sealed class InvoiceRepositoryTests
     {
         // Arrange
         await using var testDb = await TestDatabase.CreateAsync();
-        var timeProvider = new FakeTimeProvider(new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero));
+        var timeProvider = new FakeTimeProvider(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
         var repository = new InvoiceRepository(testDb.Factory, timeProvider);
 
         await SeedInvoicesAsync(testDb);
@@ -86,12 +96,19 @@ public sealed class InvoiceRepositoryTests
     {
         // Arrange
         await using var testDb = await TestDatabase.CreateAsync();
-        var timeProvider = new FakeTimeProvider(new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero));
+        var timeProvider = new FakeTimeProvider(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
         var repository = new InvoiceRepository(testDb.Factory, timeProvider);
 
         await SeedInvoicesAsync(testDb);
 
-        var query = InvoiceQuery.Default with { SortBy = sortBy, Descending = descending, PageSize = 100 };
+        var query = InvoiceQuery.Default with
+        {
+            SortBy = sortBy,
+            Descending = descending,
+            PageSize = 100,
+        };
 
         // Act
         var result = await repository.GetPagedAsync(query);
@@ -111,11 +128,17 @@ public sealed class InvoiceRepositoryTests
                 // Ties break by Id ascending: item[i-1].Id < item[i].Id
                 if (primary == 0)
                 {
-                    id.ShouldBeLessThanOrEqualTo(0, $"Sort by {sortBy} descending - tie should break by Id ascending at index {i}");
+                    id.ShouldBeLessThanOrEqualTo(
+                        0,
+                        $"Sort by {sortBy} descending - tie should break by Id ascending at index {i}"
+                    );
                 }
                 else
                 {
-                    primary.ShouldBeGreaterThanOrEqualTo(0, $"Sort by {sortBy} descending failed at index {i}");
+                    primary.ShouldBeGreaterThanOrEqualTo(
+                        0,
+                        $"Sort by {sortBy} descending failed at index {i}"
+                    );
                 }
             }
             else
@@ -124,11 +147,17 @@ public sealed class InvoiceRepositoryTests
                 // Ties break by Id ascending: item[i-1].Id < item[i].Id
                 if (primary == 0)
                 {
-                    id.ShouldBeLessThanOrEqualTo(0, $"Sort by {sortBy} ascending - tie should break by Id ascending at index {i}");
+                    id.ShouldBeLessThanOrEqualTo(
+                        0,
+                        $"Sort by {sortBy} ascending - tie should break by Id ascending at index {i}"
+                    );
                 }
                 else
                 {
-                    primary.ShouldBeLessThanOrEqualTo(0, $"Sort by {sortBy} ascending failed at index {i}");
+                    primary.ShouldBeLessThanOrEqualTo(
+                        0,
+                        $"Sort by {sortBy} ascending failed at index {i}"
+                    );
                 }
             }
         }
@@ -139,7 +168,9 @@ public sealed class InvoiceRepositoryTests
     {
         // Arrange
         await using var testDb = await TestDatabase.CreateAsync();
-        var timeProvider = new FakeTimeProvider(new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero));
+        var timeProvider = new FakeTimeProvider(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
         var repository = new InvoiceRepository(testDb.Factory, timeProvider);
 
         await using var db = await testDb.Factory.CreateDbContextAsync();
@@ -165,14 +196,22 @@ public sealed class InvoiceRepositoryTests
         );
         await db.SaveChangesAsync();
 
-        var query = InvoiceQuery.Default with { SortBy = InvoiceSortField.Total, Descending = false, PageSize = 100 };
+        var query = InvoiceQuery.Default with
+        {
+            SortBy = InvoiceSortField.Total,
+            Descending = false,
+            PageSize = 100,
+        };
 
         // Act
         var result = await repository.GetPagedAsync(query);
 
         // Assert
         var totals = result.Items.Select(i => i.Total).ToList();
-        totals.ShouldBe(totals.OrderBy(t => t).ToList(), "Total sort ascending should match Domain calculation order");
+        totals.ShouldBe(
+            totals.OrderBy(t => t).ToList(),
+            "Total sort ascending should match Domain calculation order"
+        );
     }
 
     [Fact]
@@ -180,7 +219,9 @@ public sealed class InvoiceRepositoryTests
     {
         // Arrange
         await using var testDb = await TestDatabase.CreateAsync();
-        var timeProvider = new FakeTimeProvider(new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero));
+        var timeProvider = new FakeTimeProvider(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
         var repository = new InvoiceRepository(testDb.Factory, timeProvider);
 
         await using var db = await testDb.Factory.CreateDbContextAsync();
@@ -198,14 +239,22 @@ public sealed class InvoiceRepositoryTests
         db.Invoices.AddRange(invoice1, invoice2, invoice3);
         await db.SaveChangesAsync();
 
-        var query = InvoiceQuery.Default with { SortBy = InvoiceSortField.CustomerName, Descending = false, PageSize = 100 };
+        var query = InvoiceQuery.Default with
+        {
+            SortBy = InvoiceSortField.CustomerName,
+            Descending = false,
+            PageSize = 100,
+        };
 
         // Act
         var result = await repository.GetPagedAsync(query);
 
         // Assert - IDs should be in ascending order when names are equal
         var ids = result.Items.Select(i => i.Id).ToList();
-        ids.ShouldBe(ids.OrderBy(id => id).ToList(), "With same CustomerName, should be ordered by Id ascending");
+        ids.ShouldBe(
+            ids.OrderBy(id => id).ToList(),
+            "With same CustomerName, should be ordered by Id ascending"
+        );
     }
 
     [Fact]
@@ -213,7 +262,9 @@ public sealed class InvoiceRepositoryTests
     {
         // Arrange
         await using var testDb = await TestDatabase.CreateAsync();
-        var timeProvider = new FakeTimeProvider(new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero));
+        var timeProvider = new FakeTimeProvider(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
         var repository = new InvoiceRepository(testDb.Factory, timeProvider);
 
         await using var db = await testDb.Factory.CreateDbContextAsync();
@@ -226,12 +277,20 @@ public sealed class InvoiceRepositoryTests
         // Create 15 invoices
         for (var i = 0; i < 15; i++)
         {
-            var invoice = Invoice.Create(customer.Id, FixedToday, FixedToday.AddDays(30), 10m).Value!;
+            var invoice = Invoice
+                .Create(customer.Id, FixedToday, FixedToday.AddDays(30), 10m)
+                .Value!;
             db.Invoices.Add(invoice);
         }
         await db.SaveChangesAsync();
 
-        var query = InvoiceQuery.Default with { Page = 2, PageSize = 5, SortBy = InvoiceSortField.Number, Descending = false };
+        var query = InvoiceQuery.Default with
+        {
+            Page = 2,
+            PageSize = 5,
+            SortBy = InvoiceSortField.Number,
+            Descending = false,
+        };
 
         // Act
         var result = await repository.GetPagedAsync(query);
@@ -247,30 +306,48 @@ public sealed class InvoiceRepositoryTests
     {
         // Arrange
         await using var testDb = await TestDatabase.CreateAsync();
-        var timeProvider = new FakeTimeProvider(new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero));
+        var timeProvider = new FakeTimeProvider(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
         var repository = new InvoiceRepository(testDb.Factory, timeProvider);
 
         await using var db = await testDb.Factory.CreateDbContextAsync();
 
         // Create customers
-        var overdueCustomer = Customer.Create("Test", "555-0001", "overdue@test.com", "Overdue Customer");
-        var notOverdueCustomer = Customer.Create("Test", "555-0002", "notoverdue@test.com", "Not Overdue Customer");
+        var overdueCustomer = Customer.Create(
+            "Test",
+            "555-0001",
+            "overdue@test.com",
+            "Overdue Customer"
+        );
+        var notOverdueCustomer = Customer.Create(
+            "Test",
+            "555-0002",
+            "notoverdue@test.com",
+            "Not Overdue Customer"
+        );
         var draftCustomer = Customer.Create("Test", "555-0003", "draft@test.com", "Draft Customer");
         db.Customers.AddRange(overdueCustomer, notOverdueCustomer, draftCustomer);
         await db.SaveChangesAsync();
 
         // Create overdue sent invoice
-        var overdueInvoice = Invoice.Create(overdueCustomer.Id, FixedToday.AddDays(-30), FixedToday.AddDays(-5), 10m).Value!;
+        var overdueInvoice = Invoice
+            .Create(overdueCustomer.Id, FixedToday.AddDays(-30), FixedToday.AddDays(-5), 10m)
+            .Value!;
         overdueInvoice.MarkAsSent(1);
         db.Invoices.Add(overdueInvoice);
 
         // Create non-overdue sent invoice
-        var notOverdueInvoice = Invoice.Create(notOverdueCustomer.Id, FixedToday, FixedToday.AddDays(30), 10m).Value!;
+        var notOverdueInvoice = Invoice
+            .Create(notOverdueCustomer.Id, FixedToday, FixedToday.AddDays(30), 10m)
+            .Value!;
         notOverdueInvoice.MarkAsSent(1);
         db.Invoices.Add(notOverdueInvoice);
 
         // Create overdue draft invoice (should NOT be marked overdue)
-        var overdueDraft = Invoice.Create(draftCustomer.Id, FixedToday.AddDays(-30), FixedToday.AddDays(-5), 10m).Value!;
+        var overdueDraft = Invoice
+            .Create(draftCustomer.Id, FixedToday.AddDays(-30), FixedToday.AddDays(-5), 10m)
+            .Value!;
         db.Invoices.Add(overdueDraft);
 
         await db.SaveChangesAsync();
@@ -304,7 +381,9 @@ public sealed class InvoiceRepositoryTests
     {
         // Arrange
         await using var testDb = await TestDatabase.CreateAsync();
-        var timeProvider = new FakeTimeProvider(new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero));
+        var timeProvider = new FakeTimeProvider(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
         var repository = new InvoiceRepository(testDb.Factory, timeProvider);
 
         await using var db = await testDb.Factory.CreateDbContextAsync();
@@ -338,7 +417,9 @@ public sealed class InvoiceRepositoryTests
     {
         // Arrange
         await using var testDb = await TestDatabase.CreateAsync();
-        var timeProvider = new FakeTimeProvider(new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero));
+        var timeProvider = new FakeTimeProvider(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
         var repository = new InvoiceRepository(testDb.Factory, timeProvider);
 
         await using var db = await testDb.Factory.CreateDbContextAsync();
@@ -373,9 +454,13 @@ public sealed class InvoiceRepositoryTests
 
         var invoices = new[]
         {
-            Invoice.Create(acmeCorp.Id, FixedToday.AddDays(-10), FixedToday.AddDays(20), 21m).Value!,
+            Invoice
+                .Create(acmeCorp.Id, FixedToday.AddDays(-10), FixedToday.AddDays(20), 21m)
+                .Value!,
             Invoice.Create(beta.Id, FixedToday.AddDays(-5), FixedToday.AddDays(25), 10m).Value!,
-            Invoice.Create(acmeSolutions.Id, FixedToday.AddDays(-3), FixedToday.AddDays(27), 15m).Value!
+            Invoice
+                .Create(acmeSolutions.Id, FixedToday.AddDays(-3), FixedToday.AddDays(27), 15m)
+                .Value!,
         };
 
         // Mark second one as Sent
@@ -395,17 +480,22 @@ public sealed class InvoiceRepositoryTests
     private static (int PrimaryComparison, int IdComparison) CompareByField(
         InvoiceApp.Features.Invoices.Dtos.InvoiceListItemDto a,
         InvoiceApp.Features.Invoices.Dtos.InvoiceListItemDto b,
-        InvoiceSortField sortBy)
+        InvoiceSortField sortBy
+    )
     {
         var primaryComparison = sortBy switch
         {
             InvoiceSortField.Number => a.Id.CompareTo(b.Id),
-            InvoiceSortField.CustomerName => string.Compare(a.CustomerName, b.CustomerName, StringComparison.Ordinal),
+            InvoiceSortField.CustomerName => string.Compare(
+                a.CustomerName,
+                b.CustomerName,
+                StringComparison.Ordinal
+            ),
             InvoiceSortField.IssueDate => a.IssueDate.CompareTo(b.IssueDate),
             InvoiceSortField.DueDate => a.DueDate.CompareTo(b.DueDate),
             InvoiceSortField.ItemCount => a.ItemCount.CompareTo(b.ItemCount),
             InvoiceSortField.Total => a.Total.CompareTo(b.Total),
-            _ => 0
+            _ => 0,
         };
 
         return (primaryComparison, a.Id.CompareTo(b.Id));
@@ -416,7 +506,9 @@ public sealed class InvoiceRepositoryTests
     {
         // Arrange
         await using var testDb = await TestDatabase.CreateAsync();
-        var timeProvider = new FakeTimeProvider(new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero));
+        var timeProvider = new FakeTimeProvider(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
         var repository = new InvoiceRepository(testDb.Factory, timeProvider);
 
         await using var db = await testDb.Factory.CreateDbContextAsync();
@@ -442,7 +534,9 @@ public sealed class InvoiceRepositoryTests
     {
         // Arrange
         await using var testDb = await TestDatabase.CreateAsync();
-        var timeProvider = new FakeTimeProvider(new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero));
+        var timeProvider = new FakeTimeProvider(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
         var repository = new InvoiceRepository(testDb.Factory, timeProvider);
 
         // Act
@@ -457,7 +551,9 @@ public sealed class InvoiceRepositoryTests
     {
         // Arrange
         await using var testDb = await TestDatabase.CreateAsync();
-        var timeProvider = new FakeTimeProvider(new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero));
+        var timeProvider = new FakeTimeProvider(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
         var repository = new InvoiceRepository(testDb.Factory, timeProvider);
 
         await using (var db = await testDb.Factory.CreateDbContextAsync())
@@ -466,7 +562,9 @@ public sealed class InvoiceRepositoryTests
             db.Customers.Add(customer);
             await db.SaveChangesAsync();
 
-            var invoice = Invoice.Create(customer.Id, FixedToday, FixedToday.AddDays(30), 10m).Value!;
+            var invoice = Invoice
+                .Create(customer.Id, FixedToday, FixedToday.AddDays(30), 10m)
+                .Value!;
             db.Invoices.Add(invoice);
             await db.SaveChangesAsync();
         }
@@ -486,7 +584,9 @@ public sealed class InvoiceRepositoryTests
     {
         // Arrange
         await using var testDb = await TestDatabase.CreateAsync();
-        var timeProvider = new FakeTimeProvider(new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero));
+        var timeProvider = new FakeTimeProvider(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
         var repository = new InvoiceRepository(testDb.Factory, timeProvider);
 
         int invoiceId;
@@ -496,7 +596,9 @@ public sealed class InvoiceRepositoryTests
             db.Customers.Add(customer);
             await db.SaveChangesAsync();
 
-            var invoice = Invoice.Create(customer.Id, FixedToday, FixedToday.AddDays(30), 10m).Value!;
+            var invoice = Invoice
+                .Create(customer.Id, FixedToday, FixedToday.AddDays(30), 10m)
+                .Value!;
             db.Invoices.Add(invoice);
             await db.SaveChangesAsync();
             invoiceId = invoice.Id;
@@ -517,5 +619,169 @@ public sealed class InvoiceRepositoryTests
         await using var verifyDb = await testDb.Factory.CreateDbContextAsync();
         var remainingLineItems = verifyDb.LineItems.Where(l => l.InvoiceId == invoiceId).ToList();
         remainingLineItems.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task GetWithLineItemCountAsync_ExistingInvoice_ReturnsInvoiceAndCount()
+    {
+        // Arrange
+        await using TestDatabase testDb = await TestDatabase.CreateAsync();
+        FakeTimeProvider timeProvider = new(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
+        InvoiceRepository repository = new(testDb.Factory, timeProvider);
+
+        await using (AppDbContext db = await testDb.Factory.CreateDbContextAsync())
+        {
+            Customer customer = Customer.Create("Test", "555-0001", "test@test.com", "Test Corp");
+            db.Customers.Add(customer);
+            await db.SaveChangesAsync();
+
+            Invoice newInvoice = Invoice
+                .Create(customer.Id, FixedToday, FixedToday.AddDays(30), 10m)
+                .Value!;
+            db.Invoices.Add(newInvoice);
+            await db.SaveChangesAsync();
+
+            db.LineItems.AddRange(
+                LineItem.Create(newInvoice.Id, "Item 1", 1m, 100m, 0m),
+                LineItem.Create(newInvoice.Id, "Item 2", 2m, 50m, 10m),
+                LineItem.Create(newInvoice.Id, "Item 3", 3m, 25m, 5m)
+            );
+            await db.SaveChangesAsync();
+        }
+
+        // Act
+        (Invoice? invoice, int itemCount) = await repository.GetWithLineItemCountAsync(1);
+
+        // Assert
+        invoice.ShouldNotBeNull();
+        invoice.Id.ShouldBe(1);
+        itemCount.ShouldBe(3);
+    }
+
+    [Fact]
+    public async Task GetWithLineItemCountAsync_NonExistent_ReturnsNullInvoice()
+    {
+        // Arrange
+        await using TestDatabase testDb = await TestDatabase.CreateAsync();
+        FakeTimeProvider timeProvider = new(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
+        InvoiceRepository repository = new(testDb.Factory, timeProvider);
+
+        // Act
+        (Invoice? invoice, int itemCount) = await repository.GetWithLineItemCountAsync(999);
+
+        // Assert
+        invoice.ShouldBeNull();
+        itemCount.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_SavesNewStatus()
+    {
+        // Arrange
+        await using TestDatabase testDb = await TestDatabase.CreateAsync();
+        FakeTimeProvider timeProvider = new(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
+        InvoiceRepository repository = new(testDb.Factory, timeProvider);
+
+        int invoiceId;
+        await using (AppDbContext db = await testDb.Factory.CreateDbContextAsync())
+        {
+            Customer customer = Customer.Create("Test", "555-0001", "test@test.com", "Test Corp");
+            db.Customers.Add(customer);
+            await db.SaveChangesAsync();
+
+            Invoice newInvoice = Invoice
+                .Create(customer.Id, FixedToday, FixedToday.AddDays(30), 10m)
+                .Value!;
+            db.Invoices.Add(newInvoice);
+            await db.SaveChangesAsync();
+            invoiceId = newInvoice.Id;
+
+            db.LineItems.Add(LineItem.Create(newInvoice.Id, "Item 1", 1m, 100m, 0m));
+            await db.SaveChangesAsync();
+        }
+
+        // Act
+        (Invoice? invoice, int itemCount) = await repository.GetWithLineItemCountAsync(invoiceId);
+        invoice.ShouldNotBeNull();
+        invoice.MarkAsSent(itemCount);
+        await repository.UpdateAsync(invoice);
+
+        // Assert
+        await using AppDbContext verifyDb = await testDb.Factory.CreateDbContextAsync();
+        Invoice? updatedInvoice = await verifyDb.Invoices.FindAsync(invoiceId);
+        updatedInvoice.ShouldNotBeNull();
+        updatedInvoice.Status.ShouldBe(InvoiceStatus.Sent);
+    }
+
+    [Fact]
+    public async Task GetPagedAsync_ReturnsAllowedNextStatuses()
+    {
+        // Arrange
+        await using TestDatabase testDb = await TestDatabase.CreateAsync();
+        FakeTimeProvider timeProvider = new(
+            new DateTimeOffset(FixedToday, TimeOnly.MinValue, TimeSpan.Zero)
+        );
+        InvoiceRepository repository = new(testDb.Factory, timeProvider);
+
+        await using (AppDbContext db = await testDb.Factory.CreateDbContextAsync())
+        {
+            Customer customer = Customer.Create("Test", "555-0001", "test@test.com", "Test Corp");
+            db.Customers.Add(customer);
+            await db.SaveChangesAsync();
+
+            Invoice draftInvoice = Invoice
+                .Create(customer.Id, FixedToday, FixedToday.AddDays(30), 10m)
+                .Value!;
+            Invoice sentInvoice = Invoice
+                .Create(customer.Id, FixedToday, FixedToday.AddDays(30), 10m)
+                .Value!;
+            sentInvoice.MarkAsSent(1);
+            Invoice paidInvoice = Invoice
+                .Create(customer.Id, FixedToday, FixedToday.AddDays(30), 10m)
+                .Value!;
+            paidInvoice.MarkAsSent(1);
+            paidInvoice.MarkAsPaid();
+            Invoice cancelledInvoice = Invoice
+                .Create(customer.Id, FixedToday, FixedToday.AddDays(30), 10m)
+                .Value!;
+            cancelledInvoice.Cancel();
+
+            db.Invoices.AddRange(draftInvoice, sentInvoice, paidInvoice, cancelledInvoice);
+            await db.SaveChangesAsync();
+
+            db.LineItems.AddRange(
+                LineItem.Create(draftInvoice.Id, "Item", 1m, 100m, 0m),
+                LineItem.Create(sentInvoice.Id, "Item", 1m, 100m, 0m),
+                LineItem.Create(paidInvoice.Id, "Item", 1m, 100m, 0m),
+                LineItem.Create(cancelledInvoice.Id, "Item", 1m, 100m, 0m)
+            );
+            await db.SaveChangesAsync();
+        }
+
+        InvoiceQuery query = InvoiceQuery.Default with { PageSize = 100 };
+
+        // Act
+        PagedResult<InvoiceListItemDto> result = await repository.GetPagedAsync(query);
+
+        // Assert
+        InvoiceListItemDto draft = result.Items.Single(i => i.Status == InvoiceStatus.Draft);
+        draft.AllowedNextStatuses.ShouldBe([InvoiceStatus.Sent, InvoiceStatus.Cancelled]);
+
+        InvoiceListItemDto sent = result.Items.Single(i => i.Status == InvoiceStatus.Sent);
+        sent.AllowedNextStatuses.ShouldBe([InvoiceStatus.Paid, InvoiceStatus.Cancelled]);
+
+        InvoiceListItemDto paid = result.Items.Single(i => i.Status == InvoiceStatus.Paid);
+        paid.AllowedNextStatuses.ShouldBeEmpty();
+
+        InvoiceListItemDto cancelled = result.Items.Single(i =>
+            i.Status == InvoiceStatus.Cancelled
+        );
+        cancelled.AllowedNextStatuses.ShouldBeEmpty();
     }
 }

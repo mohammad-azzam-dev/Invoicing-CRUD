@@ -13,15 +13,14 @@ namespace InvoiceApp.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Invoices_Status",
                 table: "Invoices",
-                column: "Status");
+                column: "Status"
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_Invoices_Status",
-                table: "Invoices");
+            migrationBuilder.DropIndex(name: "IX_Invoices_Status", table: "Invoices");
         }
     }
 }

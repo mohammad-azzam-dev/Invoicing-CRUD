@@ -15,7 +15,12 @@ public sealed class Invoice
 
     private Invoice() { }
 
-    public static Result<Invoice> Create(int customerId, DateOnly issueDate, DateOnly dueDate, decimal taxRate)
+    public static Result<Invoice> Create(
+        int customerId,
+        DateOnly issueDate,
+        DateOnly dueDate,
+        decimal taxRate
+    )
     {
         var invoice = new Invoice
         {
@@ -23,7 +28,7 @@ public sealed class Invoice
             IssueDate = issueDate,
             DueDate = dueDate,
             TaxRate = taxRate,
-            Status = InvoiceStatus.Draft
+            Status = InvoiceStatus.Draft,
         };
 
         return Result<Invoice>.Success(invoice);

@@ -1,0 +1,75 @@
+@page "/invoices/new"
+@page "/invoices/{Id:int}"
+@using Microsoft.AspNetCore.Authorization
+@using InvoiceApp.Components.Pages.Invoices.Forms
+@using InvoiceApp.Components.Shared
+@using InvoiceApp.Features.Invoices.Dtos
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+<PageTitle>@PageTitle - Invoice Manager</PageTitle>
+
+<NavigationLock OnBeforeInternalNavigation="@OnBeforeInternalNavigation"
+                ConfirmExternalNavigation="@_hasUnsavedChanges"/>
+
+<PageHeader Title="@PageTitle" Status="@_invoice?.Status" OnBackClick="@GoBack" Class="rz-mb-4"/>
+
+@if (_isLoading)
+{
+<RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" class="rz-p-8">
+    <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate"/>
+</RadzenStack>
+return;
+}
+
+@if (!_isCreateMode && _invoice is null)
+{
+<NotFoundMessage Message="Invoice not found" ButtonText="Back to Invoices" OnClick="@GoBack"/>
+return;
+}
+
+<RadzenStack Gap="1.5rem">
+    <InvoiceHeaderForm Model="@_formModel"
+                       ReadOnly="@_isReadOnly"
+                       OnChange="@OnFormChanged"/>
+
+    <LineItemsGrid Items="@_lineItems"
+                   ReadOnly="@_isReadOnly"
+                   OnChange="@OnFormChanged"/>
+
+    <RadzenRow JustifyContent="JustifyContent.End">
+        <RadzenColumn Size="12" SizeMD="4">
+            <InvoiceTotals LineItems="@_lineItems" TaxRate="@_formModel.TaxRate"/>
+        </RadzenColumn>
+    </RadzenRow>
+
+    @if (!_isReadOnly)
+    {
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem">
+        <RadzenButton Text="Cancel"
+                      Variant="Variant.Outlined"
+                      ButtonStyle="ButtonStyle.Secondary"
+                      Click="@GoBack"/>
+        <RadzenButton Text="Save &amp; Continue"
+                      Icon="save"
+                      Variant="Variant.Outlined"
+                      ButtonStyle="ButtonStyle.Primary"
+                      IsBusy="@_isSaving"
+                      Click="@(() => SaveAsync(navigateAfterSave: false))"/>
+        <RadzenButton Text="@(_isCreateMode ? "Save Invoice" : "Save Changes")"
+                      Icon="save"
+                      ButtonStyle="ButtonStyle.Primary"
+                      IsBusy="@_isSaving"
+                      Click="@(() => SaveAsync(navigateAfterSave: true))"/>
+    </RadzenStack>
+    }
+    else
+    {
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem">
+        <RadzenButton Text="Back to List"
+                      Variant="Variant.Outlined"
+                      ButtonStyle="ButtonStyle.Secondary"
+                      Click="@GoBack"/>
+    </RadzenStack>
+    }
+</RadzenStack>

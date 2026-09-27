@@ -1,0 +1,43 @@
+@using InvoiceApp.Domain
+
+<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem" class="@Class">
+    <RadzenButton Icon="arrow_back"
+                  Variant="Variant.Text"
+                  ButtonStyle="ButtonStyle.Secondary"
+                  Click="@OnBackClick"
+                  title="@BackTitle" />
+    <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H1" class="rz-m-0">@Title</RadzenText>
+    @if (Status.HasValue)
+    {
+        <RadzenBadge Text="@Status.Value.ToString()" Style="@GetStatusBadgeStyle(Status.Value)" class="rz-ml-2" />
+    }
+</RadzenStack>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "";
+
+    [Parameter]
+    public InvoiceStatus? Status { get; set; }
+
+    [Parameter]
+    public EventCallback OnBackClick { get; set; }
+
+    [Parameter]
+    public string BackTitle { get; set; } = "Back to list";
+
+    [Parameter]
+    public string? Class { get; set; }
+
+    private static string GetStatusBadgeStyle(InvoiceStatus status)
+    {
+        return status switch
+        {
+            InvoiceStatus.Draft => "background: var(--rz-info-lighter); color: var(--rz-info-darker);",
+            InvoiceStatus.Sent => "background: var(--rz-warning-lighter); color: var(--rz-warning-darker);",
+            InvoiceStatus.Paid => "background: var(--rz-success-lighter); color: var(--rz-success-darker);",
+            InvoiceStatus.Cancelled => "background: var(--rz-base-300); color: var(--rz-base-700);",
+            _ => ""
+        };
+    }
+}

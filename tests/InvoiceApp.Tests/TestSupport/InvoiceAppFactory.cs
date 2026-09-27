@@ -1,9 +1,9 @@
+using InvoiceApp.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using InvoiceApp.Data;
 
 namespace InvoiceApp.Tests.TestSupport;
 
@@ -29,8 +29,9 @@ public sealed class InvoiceAppFactory : WebApplicationFactory<Program>, IAsyncLi
         builder.ConfigureServices(services =>
         {
             // Remove the existing DbContextFactory registration
-            var descriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(IDbContextFactory<AppDbContext>));
+            var descriptor = services.SingleOrDefault(d =>
+                d.ServiceType == typeof(IDbContextFactory<AppDbContext>)
+            );
             if (descriptor is not null)
             {
                 services.Remove(descriptor);
@@ -49,7 +50,9 @@ public sealed class InvoiceAppFactory : WebApplicationFactory<Program>, IAsyncLi
             // Ensure database is created
             var sp = services.BuildServiceProvider();
             using var scope = sp.CreateScope();
-            var factory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<AppDbContext>>();
+            var factory = scope.ServiceProvider.GetRequiredService<
+                IDbContextFactory<AppDbContext>
+            >();
             using var db = factory.CreateDbContext();
             db.Database.EnsureCreated();
         });
@@ -60,7 +63,8 @@ public sealed class InvoiceAppFactory : WebApplicationFactory<Program>, IAsyncLi
     {
         public AppDbContext CreateDbContext() => new(options);
 
-        public Task<AppDbContext> CreateDbContextAsync(CancellationToken cancellationToken = default)
-            => Task.FromResult(CreateDbContext());
+        public Task<AppDbContext> CreateDbContextAsync(
+            CancellationToken cancellationToken = default
+        ) => Task.FromResult(CreateDbContext());
     }
 }

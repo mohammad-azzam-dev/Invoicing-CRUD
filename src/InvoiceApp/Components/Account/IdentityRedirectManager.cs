@@ -36,14 +36,19 @@ internal sealed class IdentityRedirectManager(NavigationManager navigationManage
 
     public void RedirectToWithStatus(string uri, string message, HttpContext context)
     {
-        context.Response.Cookies.Append(StatusCookieName, message, StatusCookieBuilder.Build(context));
+        context.Response.Cookies.Append(
+            StatusCookieName,
+            message,
+            StatusCookieBuilder.Build(context)
+        );
         RedirectTo(uri);
     }
 
-    private string CurrentPath => navigationManager.ToAbsoluteUri(navigationManager.Uri).GetLeftPart(UriPartial.Path);
+    private string CurrentPath =>
+        navigationManager.ToAbsoluteUri(navigationManager.Uri).GetLeftPart(UriPartial.Path);
 
     public void RedirectToCurrentPage() => RedirectTo(CurrentPath);
 
-    public void RedirectToCurrentPageWithStatus(string message, HttpContext context)
-        => RedirectToWithStatus(CurrentPath, message, context);
+    public void RedirectToCurrentPageWithStatus(string message, HttpContext context) =>
+        RedirectToWithStatus(CurrentPath, message, context);
 }

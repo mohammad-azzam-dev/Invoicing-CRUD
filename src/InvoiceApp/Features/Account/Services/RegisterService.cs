@@ -1,7 +1,7 @@
 using FluentValidation;
-using Microsoft.AspNetCore.Identity;
 using InvoiceApp.Features.Account.Dtos;
 using InvoiceApp.Features.Account.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace InvoiceApp.Features.Account.Services;
 
@@ -9,9 +9,13 @@ public sealed class RegisterService(
     UserManager<IdentityUser> userManager,
     SignInManager<IdentityUser> signInManager,
     IValidator<RegisterDto> validator,
-    ILogger<RegisterService> logger) : IRegisterService
+    ILogger<RegisterService> logger
+) : IRegisterService
 {
-    public async Task<IdentityResult> CreateUserAsync(RegisterDto dto, CancellationToken ct = default)
+    public async Task<IdentityResult> CreateUserAsync(
+        RegisterDto dto,
+        CancellationToken ct = default
+    )
     {
         var validationFailure = await ValidateAsync(dto, ct);
         if (validationFailure is not null)
@@ -19,18 +23,17 @@ public sealed class RegisterService(
             return validationFailure;
         }
 
-        var user = new IdentityUser
-        {
-            UserName = dto.Email,
-            Email = dto.Email
-        };
+        var user = new IdentityUser { UserName = dto.Email, Email = dto.Email };
 
         var result = await userManager.CreateAsync(user, dto.Password);
 
         if (!result.Succeeded)
         {
-            logger.LogWarning("Failed to create user {Email}: {Errors}",
-                dto.Email, string.Join(", ", result.Errors.Select(e => e.Description)));
+            logger.LogWarning(
+                "Failed to create user {Email}: {Errors}",
+                dto.Email,
+                string.Join(", ", result.Errors.Select(e => e.Description))
+            );
             return result;
         }
 
@@ -48,11 +51,16 @@ public sealed class RegisterService(
             return null;
         }
 
-        logger.LogWarning("Registration validation failed: {Errors}",
-            string.Join(", ", result.Errors.Select(e => e.ErrorMessage)));
+        logger.LogWarning(
+            "Registration validation failed: {Errors}",
+            string.Join(", ", result.Errors.Select(e => e.ErrorMessage))
+        );
 
-        var identityErrors = result.Errors
-            .Select(e => new IdentityError { Code = e.PropertyName, Description = e.ErrorMessage });
+        var identityErrors = result.Errors.Select(e => new IdentityError
+        {
+            Code = e.PropertyName,
+            Description = e.ErrorMessage,
+        });
 
         return IdentityResult.Failed(identityErrors.ToArray());
     }

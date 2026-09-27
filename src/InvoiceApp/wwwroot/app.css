@@ -86,6 +86,14 @@ h1:focus {
     gap: unset;
 }
 
+/* Center auth pages (login/register) */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .text-white {
     color: #fff;
 }
@@ -126,5 +134,30 @@ h1:focus {
     width: 250px;
     z-index: 1000;
     overflow-y: auto;
+}
+
+/* Actions button in data grid */
+.actions-button {
+    color: var(--rz-text-color) !important;
+}
+
+.actions-button:hover {
+    background: var(--rz-base-200) !important;
+}
+
+/* Sidebar selected item - match header gradient colors */
+.rz-panel-menu .rz-navigation-item-active,
+.rz-panel-menu .rz-navigation-item-wrapper-active {
+    background: linear-gradient(135deg, #1a7f5a 0%, #1976d2 100%) !important;
+}
+
+.rz-panel-menu .rz-navigation-item-active .rz-navigation-item-link,
+.rz-panel-menu .rz-navigation-item-wrapper-active .rz-navigation-item-link {
+    color: #fff !important;
+}
+
+.rz-panel-menu .rz-navigation-item-active .rz-navigation-item-icon,
+.rz-panel-menu .rz-navigation-item-wrapper-active .rz-navigation-item-icon {
+    color: #fff !important;
 }
 

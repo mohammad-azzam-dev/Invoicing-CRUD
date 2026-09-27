@@ -1,6 +1,6 @@
+using InvoiceApp.Data;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using InvoiceApp.Data;
 
 namespace InvoiceApp.Tests.TestSupport;
 
@@ -21,9 +21,7 @@ public sealed class TestDatabase : IAsyncDisposable
         var connection = new SqliteConnection("DataSource=:memory:");
         await connection.OpenAsync();
 
-        var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlite(connection)
-            .Options;
+        var options = new DbContextOptionsBuilder<AppDbContext>().UseSqlite(connection).Options;
 
         var factory = new TestDbContextFactory(options);
 
@@ -38,12 +36,13 @@ public sealed class TestDatabase : IAsyncDisposable
         await _connection.DisposeAsync();
     }
 
-    private sealed class TestDbContextFactory(DbContextOptions<AppDbContext> options) 
+    private sealed class TestDbContextFactory(DbContextOptions<AppDbContext> options)
         : IDbContextFactory<AppDbContext>
     {
         public AppDbContext CreateDbContext() => new(options);
 
-        public Task<AppDbContext> CreateDbContextAsync(CancellationToken cancellationToken = default)
-            => Task.FromResult(CreateDbContext());
+        public Task<AppDbContext> CreateDbContextAsync(
+            CancellationToken cancellationToken = default
+        ) => Task.FromResult(CreateDbContext());
     }
 }

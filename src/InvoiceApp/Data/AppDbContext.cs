@@ -1,7 +1,7 @@
+using InvoiceApp.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using InvoiceApp.Domain;
 
 namespace InvoiceApp.Data;
 

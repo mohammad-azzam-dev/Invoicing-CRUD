@@ -1,0 +1,19 @@
+<RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" class="rz-p-4">
+    <RadzenIcon Icon="@Icon" Style="font-size: 3rem; opacity: 0.5;" />
+    <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-color-secondary">@Message</RadzenText>
+    @if (!string.IsNullOrEmpty(Hint))
+    {
+        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">@Hint</RadzenText>
+    }
+</RadzenStack>
+
+@code {
+    [Parameter]
+    public string Icon { get; set; } = "inbox";
+
+    [Parameter]
+    public string Message { get; set; } = "No items found";
+
+    [Parameter]
+    public string? Hint { get; set; }
+}

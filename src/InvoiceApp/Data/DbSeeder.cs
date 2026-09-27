@@ -1,6 +1,6 @@
+using InvoiceApp.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using InvoiceApp.Domain;
 
 namespace InvoiceApp.Data;
 
@@ -29,7 +29,7 @@ public static class DbSeeder
         {
             UserName = DemoEmail,
             Email = DemoEmail,
-            EmailConfirmed = true
+            EmailConfirmed = true,
         };
 
         await userManager.CreateAsync(user, DemoPassword);
@@ -66,16 +66,76 @@ public static class DbSeeder
     {
         return
         [
-            Customer.Create("John Smith", "555-0101", "john.smith@acme.com", "Acme Corporation", "123 Main St, New York, NY 10001"),
-            Customer.Create("Sarah Johnson", "555-0102", "sarah@techstart.io", "TechStart Inc.", "456 Innovation Blvd, San Francisco, CA 94102"),
-            Customer.Create("Michael Chen", "555-0103", "mchen@globalsolutions.com", "Global Solutions Ltd.", "789 Enterprise Ave, Chicago, IL 60601"),
-            Customer.Create("Emily Davis", "555-0104", "emily.davis@digitaldynamics.net", "Digital Dynamics", "321 Tech Park Dr, Austin, TX 78701"),
-            Customer.Create("Robert Wilson", "555-0105", "rwilson@smithpartners.com", "Smith & Partners", "555 Legal Way, Boston, MA 02101"),
-            Customer.Create("Jennifer Lee", "555-0106", "jlee@innovationlabs.co", "Innovation Labs", "777 Research Rd, Seattle, WA 98101"),
-            Customer.Create("David Martinez", "555-0107", "david@enterprise-sys.com", "Enterprise Systems", "888 Corporate Blvd, Denver, CO 80201"),
-            Customer.Create("Lisa Anderson", "555-0108", "lisa@cloudnine.services", "Cloud Nine Services", "999 Cloud St, Portland, OR 97201"),
-            Customer.Create("James Taylor", "555-0109", "jtaylor@futuretech.corp", "Future Tech Corp", "111 Future Lane, Miami, FL 33101"),
-            Customer.Create("Amanda Brown", "555-0110", "amanda.brown@gmail.com", null, "222 Freelance Ave, Los Angeles, CA 90001")
+            Customer.Create(
+                "John Smith",
+                "555-0101",
+                "john.smith@acme.com",
+                "Acme Corporation",
+                "123 Main St, New York, NY 10001"
+            ),
+            Customer.Create(
+                "Sarah Johnson",
+                "555-0102",
+                "sarah@techstart.io",
+                "TechStart Inc.",
+                "456 Innovation Blvd, San Francisco, CA 94102"
+            ),
+            Customer.Create(
+                "Michael Chen",
+                "555-0103",
+                "mchen@globalsolutions.com",
+                "Global Solutions Ltd.",
+                "789 Enterprise Ave, Chicago, IL 60601"
+            ),
+            Customer.Create(
+                "Emily Davis",
+                "555-0104",
+                "emily.davis@digitaldynamics.net",
+                "Digital Dynamics",
+                "321 Tech Park Dr, Austin, TX 78701"
+            ),
+            Customer.Create(
+                "Robert Wilson",
+                "555-0105",
+                "rwilson@smithpartners.com",
+                "Smith & Partners",
+                "555 Legal Way, Boston, MA 02101"
+            ),
+            Customer.Create(
+                "Jennifer Lee",
+                "555-0106",
+                "jlee@innovationlabs.co",
+                "Innovation Labs",
+                "777 Research Rd, Seattle, WA 98101"
+            ),
+            Customer.Create(
+                "David Martinez",
+                "555-0107",
+                "david@enterprise-sys.com",
+                "Enterprise Systems",
+                "888 Corporate Blvd, Denver, CO 80201"
+            ),
+            Customer.Create(
+                "Lisa Anderson",
+                "555-0108",
+                "lisa@cloudnine.services",
+                "Cloud Nine Services",
+                "999 Cloud St, Portland, OR 97201"
+            ),
+            Customer.Create(
+                "James Taylor",
+                "555-0109",
+                "jtaylor@futuretech.corp",
+                "Future Tech Corp",
+                "111 Future Lane, Miami, FL 33101"
+            ),
+            Customer.Create(
+                "Amanda Brown",
+                "555-0110",
+                "amanda.brown@gmail.com",
+                null,
+                "222 Freelance Ave, Los Angeles, CA 90001"
+            ),
         ];
     }
 
@@ -102,7 +162,7 @@ public static class DbSeeder
                 < 15 => InvoiceStatus.Draft,
                 < 40 => InvoiceStatus.Sent,
                 < 85 => InvoiceStatus.Paid,
-                _ => InvoiceStatus.Cancelled
+                _ => InvoiceStatus.Cancelled,
             };
 
             // Adjust dates for realistic scenarios
@@ -125,7 +185,13 @@ public static class DbSeeder
         return invoices;
     }
 
-    private static Invoice CreateInvoice(int customerId, DateOnly issueDate, DateOnly dueDate, decimal taxRate, InvoiceStatus status)
+    private static Invoice CreateInvoice(
+        int customerId,
+        DateOnly issueDate,
+        DateOnly dueDate,
+        decimal taxRate,
+        InvoiceStatus status
+    )
     {
         var result = Invoice.Create(customerId, issueDate, dueDate, taxRate);
         var invoice = result.Value!;
@@ -154,10 +220,18 @@ public static class DbSeeder
         var lineItems = new List<LineItem>();
         var descriptions = new[]
         {
-            "Consulting Services", "Software Development", "UI/UX Design",
-            "Project Management", "Technical Support", "Data Analysis",
-            "System Integration", "Training Session", "Code Review",
-            "Architecture Planning", "Security Audit", "Performance Optimization"
+            "Consulting Services",
+            "Software Development",
+            "UI/UX Design",
+            "Project Management",
+            "Technical Support",
+            "Data Analysis",
+            "System Integration",
+            "Training Session",
+            "Code Review",
+            "Architecture Planning",
+            "Security Audit",
+            "Performance Optimization",
         };
 
         var random = new Random(42); // Fixed seed for reproducibility
@@ -172,7 +246,9 @@ public static class DbSeeder
                 var unitPrice = Math.Round((decimal)(random.NextDouble() * 490 + 10), 2); // 10-500
                 var discountPercent = random.Next(0, 21); // 0-20%
 
-                lineItems.Add(LineItem.Create(invoice.Id, description, quantity, unitPrice, discountPercent));
+                lineItems.Add(
+                    LineItem.Create(invoice.Id, description, quantity, unitPrice, discountPercent)
+                );
             }
         }
 

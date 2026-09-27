@@ -64,7 +64,13 @@ public sealed class InvoiceCalculationsTests
     [Fact]
     public void LineTotal_WithNoDiscount_ReturnsRoundedGrossAmount()
     {
-        var item = LineItem.Create(1, "Test", quantity: 3m, unitPrice: 33.333m, discountPercent: 0m);
+        var item = LineItem.Create(
+            1,
+            "Test",
+            quantity: 3m,
+            unitPrice: 33.333m,
+            discountPercent: 0m
+        );
 
         // GrossAmount = 99.999, rounded = 100.00
         item.LineTotal().ShouldBe(100.00m);
@@ -100,7 +106,7 @@ public sealed class InvoiceCalculationsTests
         {
             LineItem.Create(1, "Item 1", quantity: 2m, unitPrice: 100m, discountPercent: 0m), // LineTotal = 200
             LineItem.Create(1, "Item 2", quantity: 3m, unitPrice: 50m, discountPercent: 10m), // LineTotal = 150 - 15 = 135
-            LineItem.Create(1, "Item 3", quantity: 1m, unitPrice: 75m, discountPercent: 0m)   // LineTotal = 75
+            LineItem.Create(1, "Item 3", quantity: 1m, unitPrice: 75m, discountPercent: 0m), // LineTotal = 75
         };
 
         InvoiceCalculations.Subtotal(items).ShouldBe(410m);
@@ -121,7 +127,7 @@ public sealed class InvoiceCalculationsTests
         {
             LineItem.Create(1, "Item 1", quantity: 2m, unitPrice: 100m, discountPercent: 10m), // DiscountAmount = 20
             LineItem.Create(1, "Item 2", quantity: 3m, unitPrice: 50m, discountPercent: 20m), // DiscountAmount = 30
-            LineItem.Create(1, "Item 3", quantity: 1m, unitPrice: 75m, discountPercent: 0m)   // DiscountAmount = 0
+            LineItem.Create(1, "Item 3", quantity: 1m, unitPrice: 75m, discountPercent: 0m), // DiscountAmount = 0
         };
 
         InvoiceCalculations.DiscountTotal(items).ShouldBe(50m);
@@ -133,7 +139,7 @@ public sealed class InvoiceCalculationsTests
         var invoice = Invoice.Create(1, Today, Today.AddDays(30), taxRate: 21m).Value!;
         var items = new[]
         {
-            LineItem.Create(1, "Item 1", quantity: 1m, unitPrice: 100m, discountPercent: 0m)
+            LineItem.Create(1, "Item 1", quantity: 1m, unitPrice: 100m, discountPercent: 0m),
         };
 
         // Subtotal = 100, TaxAmount = 100 * 21 / 100 = 21
@@ -146,7 +152,7 @@ public sealed class InvoiceCalculationsTests
         var invoice = Invoice.Create(1, Today, Today.AddDays(30), taxRate: 0m).Value!;
         var items = new[]
         {
-            LineItem.Create(1, "Item 1", quantity: 1m, unitPrice: 100m, discountPercent: 0m)
+            LineItem.Create(1, "Item 1", quantity: 1m, unitPrice: 100m, discountPercent: 0m),
         };
 
         InvoiceCalculations.TaxAmount(invoice, items).ShouldBe(0m);
@@ -158,7 +164,7 @@ public sealed class InvoiceCalculationsTests
         var invoice = Invoice.Create(1, Today, Today.AddDays(30), taxRate: 7m).Value!;
         var items = new[]
         {
-            LineItem.Create(1, "Item 1", quantity: 1m, unitPrice: 33.33m, discountPercent: 0m)
+            LineItem.Create(1, "Item 1", quantity: 1m, unitPrice: 33.33m, discountPercent: 0m),
         };
 
         // Subtotal = 33.33, TaxAmount = 33.33 * 7 / 100 = 2.3331 -> 2.33
@@ -171,7 +177,7 @@ public sealed class InvoiceCalculationsTests
         var invoice = Invoice.Create(1, Today, Today.AddDays(30), taxRate: 21m).Value!;
         var items = new[]
         {
-            LineItem.Create(1, "Item 1", quantity: 1m, unitPrice: 100m, discountPercent: 0m)
+            LineItem.Create(1, "Item 1", quantity: 1m, unitPrice: 100m, discountPercent: 0m),
         };
 
         // Subtotal = 100, TaxAmount = 21, Total = 121
@@ -194,7 +200,7 @@ public sealed class InvoiceCalculationsTests
         {
             LineItem.Create(1, "Item 1", quantity: 1m, unitPrice: 100m, discountPercent: 0m),
             LineItem.Create(1, "Item 2", quantity: 1m, unitPrice: 50m, discountPercent: 0m),
-            LineItem.Create(1, "Item 3", quantity: 1m, unitPrice: 25m, discountPercent: 0m)
+            LineItem.Create(1, "Item 3", quantity: 1m, unitPrice: 25m, discountPercent: 0m),
         };
 
         InvoiceCalculations.ItemCount(items).ShouldBe(3);

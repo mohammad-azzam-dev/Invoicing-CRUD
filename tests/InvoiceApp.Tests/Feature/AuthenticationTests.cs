@@ -1,10 +1,10 @@
 using System.Net;
+using InvoiceApp.Data;
+using InvoiceApp.Tests.TestSupport;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using InvoiceApp.Data;
-using InvoiceApp.Tests.TestSupport;
 
 namespace InvoiceApp.Tests.Feature;
 
@@ -21,10 +21,9 @@ public sealed class AuthenticationTests : IClassFixture<InvoiceAppFactory>
     public async Task AnonymousRequest_ToHomePage_RedirectsToLogin()
     {
         // Arrange
-        var client = _factory.CreateClient(new WebApplicationFactoryClientOptions
-        {
-            AllowAutoRedirect = false
-        });
+        var client = _factory.CreateClient(
+            new WebApplicationFactoryClientOptions { AllowAutoRedirect = false }
+        );
 
         // Act
         var response = await client.GetAsync("/");
@@ -38,10 +37,9 @@ public sealed class AuthenticationTests : IClassFixture<InvoiceAppFactory>
     public async Task AnonymousRequest_ToInvoicesPage_RedirectsToLogin()
     {
         // Arrange
-        var client = _factory.CreateClient(new WebApplicationFactoryClientOptions
-        {
-            AllowAutoRedirect = false
-        });
+        var client = _factory.CreateClient(
+            new WebApplicationFactoryClientOptions { AllowAutoRedirect = false }
+        );
 
         // Act
         var response = await client.GetAsync("/invoices");
@@ -90,14 +88,14 @@ public sealed class AuthenticationTests : IClassFixture<InvoiceAppFactory>
     {
         // Arrange
         await using var scope = _factory.Services.CreateAsyncScope();
-        
+
         // Act
         await DbSeeder.SeedAsync(scope.ServiceProvider);
 
         // Assert
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
         var user = await userManager.FindByEmailAsync(DbSeeder.DemoEmail);
-        
+
         user.ShouldNotBeNull();
         user.Email.ShouldBe(DbSeeder.DemoEmail);
         user.EmailConfirmed.ShouldBeTrue();
@@ -108,7 +106,7 @@ public sealed class AuthenticationTests : IClassFixture<InvoiceAppFactory>
     {
         // Arrange
         await using var scope = _factory.Services.CreateAsyncScope();
-        
+
         // Act - call twice
         await DbSeeder.SeedAsync(scope.ServiceProvider);
         await DbSeeder.SeedAsync(scope.ServiceProvider);
@@ -116,7 +114,7 @@ public sealed class AuthenticationTests : IClassFixture<InvoiceAppFactory>
         // Assert - should still have exactly one user with that email
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
         var user = await userManager.FindByEmailAsync(DbSeeder.DemoEmail);
-        
+
         user.ShouldNotBeNull();
     }
 

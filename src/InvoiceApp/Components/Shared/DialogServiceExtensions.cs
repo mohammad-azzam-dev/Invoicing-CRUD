@@ -5,17 +5,17 @@ namespace InvoiceApp.Components.Shared;
 public static class DialogServiceExtensions
 {
     public static async Task<bool> ConfirmAsync(
-        this DialogService dialogs,
+        this DialogService dialogService,
         string message,
-        string title = "Confirm",
-        string okText = "Confirm",
-        string cancelText = "Cancel")
+        string title,
+        string confirmText = "OK"
+    )
     {
-        bool? result = await dialogs.Confirm(message, title, new ConfirmOptions
-        {
-            OkButtonText = okText,
-            CancelButtonText = cancelText
-        });
+        bool? result = await dialogService.Confirm(
+            message,
+            title,
+            new ConfirmOptions { OkButtonText = confirmText, CancelButtonText = "Cancel" }
+        );
 
         return result == true;
     }

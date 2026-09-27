@@ -9,7 +9,8 @@
         <RedirectToDashboard />
     </Authorized>
     <NotAuthorized>
-        <RadzenRow class="rz-mx-auto rz-my-12 auth-row" Style="max-width: 900px;">
+        <div class="auth-container">
+        <RadzenRow class="rz-mx-auto auth-row" Style="max-width: 900px;">
             <RadzenColumn Size="12" SizeMD="6">
                 <RadzenCard class="rz-shadow-6 rz-p-12" Style="height: 100%; background: linear-gradient(135deg, #1a7f5a 0%, #1976d2 100%); border-radius: 1rem 0 0 1rem;">
                     <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H1" class="rz-color-white rz-mb-4">
@@ -63,5 +64,6 @@
                 </RadzenCard>
             </RadzenColumn>
         </RadzenRow>
+        </div>
     </NotAuthorized>
 </AuthorizeView>

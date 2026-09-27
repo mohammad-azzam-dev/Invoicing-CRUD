@@ -8,13 +8,16 @@ public sealed record InvoiceQuery(
     InvoiceSortField SortBy,
     bool Descending,
     int Page,
-    int PageSize)
+    int PageSize
+)
 {
-    public static InvoiceQuery Default => new(
-        Search: null,
-        Status: null,
-        SortBy: InvoiceSortField.IssueDate,
-        Descending: true,
-        Page: 1,
-        PageSize: 10);
+    public static InvoiceQuery Default =>
+        new(
+            Search: null,
+            Status: null,
+            SortBy: InvoiceSortField.IssueDate,
+            Descending: true,
+            Page: 1,
+            PageSize: 10
+        );
 }

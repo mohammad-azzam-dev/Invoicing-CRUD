@@ -1,0 +1,50 @@
+@using InvoiceApp.Components.Pages.Invoices.Forms
+@using InvoiceApp.Domain
+
+<RadzenCard Style="background: var(--rz-base-200);">
+    <RadzenStack Gap="0.5rem">
+        <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+            <RadzenColumn>
+                <RadzenText TextStyle="TextStyle.Body1">Subtotal</RadzenText>
+            </RadzenColumn>
+            <RadzenColumn>
+                <RadzenText TextStyle="TextStyle.Body1" Style="text-align: right;">
+                    @Subtotal.ToString("C2")
+                </RadzenText>
+            </RadzenColumn>
+        </RadzenRow>
+        <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+            <RadzenColumn>
+                <RadzenText TextStyle="TextStyle.Body1">Tax (@TaxRate.ToString("N1")%)</RadzenText>
+            </RadzenColumn>
+            <RadzenColumn>
+                <RadzenText TextStyle="TextStyle.Body1" Style="text-align: right;">
+                    @TaxAmount.ToString("C2")
+                </RadzenText>
+            </RadzenColumn>
+        </RadzenRow>
+        <hr style="margin: 0.5rem 0; border-color: var(--rz-base-400);" />
+        <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+            <RadzenColumn>
+                <RadzenText TextStyle="TextStyle.H6" Style="font-weight: 600;">Total</RadzenText>
+            </RadzenColumn>
+            <RadzenColumn>
+                <RadzenText TextStyle="TextStyle.H6" Style="text-align: right; font-weight: 600;">
+                    @Total.ToString("C2")
+                </RadzenText>
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenStack>
+</RadzenCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public IEnumerable<LineItemFormModel> LineItems { get; set; } = [];
+
+    [Parameter]
+    public decimal TaxRate { get; set; }
+
+    private decimal Subtotal => InvoiceCalculations.CalculateSubtotal(LineItems.Select(i => i.LineTotal));
+    private decimal TaxAmount => InvoiceCalculations.CalculateTaxAmount(Subtotal, TaxRate);
+    private decimal Total => InvoiceCalculations.CalculateTotal(Subtotal, TaxRate);
+}

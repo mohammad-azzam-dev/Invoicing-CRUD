@@ -14,7 +14,13 @@ public sealed class LineItem
 
     private LineItem() { }
 
-    public static LineItem Create(int invoiceId, string description, decimal quantity, decimal unitPrice, decimal discountPercent)
+    public static LineItem Create(
+        int invoiceId,
+        string description,
+        decimal quantity,
+        decimal unitPrice,
+        decimal discountPercent
+    )
     {
         return new LineItem
         {
@@ -22,11 +28,16 @@ public sealed class LineItem
             Description = description,
             Quantity = quantity,
             UnitPrice = unitPrice,
-            DiscountPercent = discountPercent
+            DiscountPercent = discountPercent,
         };
     }
 
-    public void Update(string description, decimal quantity, decimal unitPrice, decimal discountPercent)
+    public void Update(
+        string description,
+        decimal quantity,
+        decimal unitPrice,
+        decimal discountPercent
+    )
     {
         Description = description;
         Quantity = quantity;

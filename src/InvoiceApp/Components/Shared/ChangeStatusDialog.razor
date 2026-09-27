@@ -1,0 +1,41 @@
+@using InvoiceApp.Domain
+
+<RadzenStack Gap="1rem">
+    <RadzenText TextStyle="TextStyle.Body1">
+        Select a new status for <strong>@InvoiceNumber</strong>:
+    </RadzenText>
+
+    <RadzenDropDown TValue="InvoiceStatus?"
+                    Data="@AllowedStatuses"
+                    @bind-Value="@_selectedStatus"
+                    Placeholder="Select status..."
+                    Style="width: 100%;" />
+
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" JustifyContent="JustifyContent.End">
+        <RadzenButton Text="Cancel" ButtonStyle="ButtonStyle.Light" Click="@OnCancel" />
+        <RadzenButton Text="Save" ButtonStyle="ButtonStyle.Primary" Click="@OnSave" Disabled="@(_selectedStatus is null)" />
+    </RadzenStack>
+</RadzenStack>
+
+@code {
+    [Parameter]
+    public string InvoiceNumber { get; set; } = "";
+
+    [Parameter]
+    public IReadOnlyList<InvoiceStatus> AllowedStatuses { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<InvoiceStatus?> OnClose { get; set; }
+
+    private InvoiceStatus? _selectedStatus;
+
+    private async Task OnCancel()
+    {
+        await OnClose.InvokeAsync(null);
+    }
+
+    private async Task OnSave()
+    {
+        await OnClose.InvokeAsync(_selectedStatus);
+    }
+}
