@@ -1,47 +1,17 @@
-using FluentValidation;
-using FluentValidation.Results;
 using InvoiceApp.Domain;
 using InvoiceApp.Features.Invoices.Dtos;
 using InvoiceApp.Features.Invoices.Interfaces;
+using InvoiceApp.Features.Invoices.Validators;
 using Microsoft.EntityFrameworkCore;
 
 namespace InvoiceApp.Features.Invoices.Services;
 
-public sealed class InvoiceService(
+public sealed class InvoiceCommandService(
     IInvoiceRepository repository,
-    IValidator<InvoiceFormDto> invoiceValidator,
-    IValidator<LineItemFormDto> lineItemValidator,
-    ILogger<InvoiceService> logger
-) : IInvoiceService
+    InvoiceFormValidator formValidator,
+    ILogger<InvoiceCommandService> logger
+) : IInvoiceCommandService
 {
-    public async Task<PagedResult<InvoiceListItemDto>> GetPagedAsync(
-        InvoiceQuery query,
-        CancellationToken ct = default
-    )
-    {
-        logger.LogDebug(
-            "Getting paged invoices: Page={Page}, PageSize={PageSize}, Search={Search}, Status={Status}",
-            query.Page,
-            query.PageSize,
-            query.Search,
-            query.Status
-        );
-        return await repository.GetPagedAsync(query, ct);
-    }
-
-    public async Task<InvoiceDetailsDto?> GetDetailsAsync(int id, CancellationToken ct = default)
-    {
-        Invoice? invoice = await repository.GetWithLineItemsAsync(id, ct);
-
-        if (invoice is null)
-        {
-            logger.LogDebug("Invoice not found: {InvoiceId}", id);
-            return null;
-        }
-
-        return invoice.ToDetailsDto(invoice.LineItems);
-    }
-
     public async Task<Result<int>> SaveAsync(
         int id,
         InvoiceFormDto form,
@@ -49,10 +19,10 @@ public sealed class InvoiceService(
         CancellationToken ct = default
     )
     {
-        string? validationError = await ValidateFormsAsync(form, lineItems, ct);
-        if (validationError is not null)
+        Result validationResult = await formValidator.ValidateAsync(form, lineItems, ct);
+        if (!validationResult.IsSuccess)
         {
-            return Result<int>.Failure(validationError);
+            return Result<int>.Failure(validationResult.Error!);
         }
 
         try
@@ -189,18 +159,6 @@ public sealed class InvoiceService(
         }
     }
 
-    public async Task<IReadOnlyList<CustomerLookupDto>> GetCustomersForDropdownAsync(
-        CancellationToken ct = default
-    )
-    {
-        return await repository.GetCustomerLookupsAsync(ct);
-    }
-
-    public async Task<InvoiceStatsDto> GetStatsAsync(CancellationToken ct = default)
-    {
-        return await repository.GetStatsAsync(ct);
-    }
-
     private async Task<Result<(Invoice, ICollection<LineItem>)>> PrepareInvoiceDataAsync(
         int id,
         InvoiceFormDto form,
@@ -226,7 +184,7 @@ public sealed class InvoiceService(
             );
         }
 
-        Invoice? existing = await repository.GetWithLineItemsAsync(id, ct);
+        Invoice? existing = await repository.GetForEditAsync(id, ct);
 
         if (existing is null)
         {
@@ -261,36 +219,5 @@ public sealed class InvoiceService(
         return Result<(Invoice, ICollection<LineItem>)>.Success(
             (existing, existing.LineItems)
         );
-    }
-
-    private async Task<string?> ValidateFormsAsync(
-        InvoiceFormDto form,
-        IReadOnlyList<LineItemFormDto> lineItems,
-        CancellationToken ct
-    )
-    {
-        ValidationResult invoiceValidation = await invoiceValidator.ValidateAsync(form, ct);
-        if (!invoiceValidation.IsValid)
-        {
-            string errors = string.Join("; ", invoiceValidation.Errors.Select(e => e.ErrorMessage));
-            logger.LogWarning("Invoice validation failed: {Errors}", errors);
-            return errors;
-        }
-
-        foreach (LineItemFormDto lineItem in lineItems)
-        {
-            ValidationResult lineValidation = await lineItemValidator.ValidateAsync(lineItem, ct);
-            if (!lineValidation.IsValid)
-            {
-                string errors = string.Join(
-                    "; ",
-                    lineValidation.Errors.Select(e => e.ErrorMessage)
-                );
-                logger.LogWarning("Line item validation failed: {Errors}", errors);
-                return errors;
-            }
-        }
-
-        return null;
     }
 }

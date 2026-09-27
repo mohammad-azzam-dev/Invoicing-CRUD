@@ -71,7 +71,7 @@ public sealed partial class Index
             return;
         }
 
-        Result result = await InvoiceService.DeleteAsync(invoice.Id);
+        Result result = await CommandService.DeleteAsync(invoice.Id);
 
         if (result.IsSuccess)
         {
@@ -142,7 +142,7 @@ public sealed partial class Index
             }
         }
 
-        Result result = await InvoiceService.ChangeStatusAsync(invoice.Id, selectedStatus.Value);
+        Result result = await CommandService.ChangeStatusAsync(invoice.Id, selectedStatus.Value);
 
         if (!result.IsSuccess)
         {

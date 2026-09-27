@@ -25,7 +25,7 @@ public sealed class LineItem
         return new LineItem
         {
             InvoiceId = invoiceId,
-            Description = description,
+            Description = description.Trim(),
             Quantity = quantity,
             UnitPrice = unitPrice,
             DiscountPercent = discountPercent,
@@ -39,7 +39,7 @@ public sealed class LineItem
         decimal discountPercent
     )
     {
-        Description = description;
+        Description = description.Trim();
         Quantity = quantity;
         UnitPrice = unitPrice;
         DiscountPercent = discountPercent;

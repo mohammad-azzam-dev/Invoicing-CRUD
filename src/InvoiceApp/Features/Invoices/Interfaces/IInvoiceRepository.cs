@@ -22,6 +22,7 @@ public interface IInvoiceRepository
         CancellationToken ct = default
     );
     Task<Invoice?> GetWithLineItemsAsync(int id, CancellationToken ct = default);
+    Task<Invoice?> GetForEditAsync(int id, CancellationToken ct = default);
     Task<int> AddAsync(Invoice invoice, CancellationToken ct = default);
     Task UpdateAsync(Invoice invoice, CancellationToken ct = default);
     Task DeleteAsync(Invoice invoice, CancellationToken ct = default);

@@ -80,6 +80,12 @@ public sealed class FakeInvoiceRepository : IInvoiceRepository
         return Task.FromResult(invoice);
     }
 
+    public Task<Invoice?> GetForEditAsync(int id, CancellationToken ct = default)
+    {
+        _invoiceEntities.TryGetValue(id, out Invoice? invoice);
+        return Task.FromResult(invoice);
+    }
+
     public Task<int> AddAsync(Invoice invoice, CancellationToken ct = default)
     {
         _invoiceEntities[invoice.Id] = invoice;

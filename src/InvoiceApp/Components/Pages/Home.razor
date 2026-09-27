@@ -4,7 +4,7 @@
 @using InvoiceApp.Features.Invoices.Interfaces
 @attribute [Authorize]
 @rendermode InteractiveServer
-@inject IInvoiceService InvoiceService
+@inject IInvoiceQueryService QueryService
 
 <PageTitle>Dashboard - Invoice Manager</PageTitle>
 
@@ -73,6 +73,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _stats = await InvoiceService.GetStatsAsync();
+        _stats = await QueryService.GetStatsAsync();
     }
 }

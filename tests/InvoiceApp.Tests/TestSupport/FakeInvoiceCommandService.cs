@@ -1,13 +1,11 @@
 using InvoiceApp.Domain;
-using InvoiceApp.Features.Invoices;
 using InvoiceApp.Features.Invoices.Dtos;
 using InvoiceApp.Features.Invoices.Interfaces;
 
 namespace InvoiceApp.Tests.TestSupport;
 
-public sealed class FakeInvoiceService : IInvoiceService
+public sealed class FakeInvoiceCommandService : IInvoiceCommandService
 {
-    private readonly List<InvoiceListItemDto> _invoices = [];
     private readonly HashSet<int> _deletedIds = [];
     private readonly Dictionary<int, InvoiceStatus> _statusChanges = new();
     private readonly List<(int Id, InvoiceFormDto Form, IReadOnlyList<LineItemFormDto> LineItems)> _savedInvoices = [];
@@ -15,12 +13,6 @@ public sealed class FakeInvoiceService : IInvoiceService
     private Result? _deleteResult;
     private Result? _changeStatusResult;
     private int _nextId = 1;
-
-    public void SetInvoices(IEnumerable<InvoiceListItemDto> invoices)
-    {
-        _invoices.Clear();
-        _invoices.AddRange(invoices);
-    }
 
     public void SetSaveResult(Result<int> result)
     {
@@ -52,35 +44,6 @@ public sealed class FakeInvoiceService : IInvoiceService
         }
         KeyValuePair<int, InvoiceStatus> last = _statusChanges.Last();
         return (last.Key, last.Value);
-    }
-
-    public Task<PagedResult<InvoiceListItemDto>> GetPagedAsync(
-        InvoiceQuery query,
-        CancellationToken ct = default
-    )
-    {
-        var filtered = _invoices.AsEnumerable();
-
-        if (!string.IsNullOrWhiteSpace(query.Search))
-        {
-            var search = query.Search.Trim().ToLowerInvariant();
-            filtered = filtered.Where(i =>
-                i.CustomerName.ToLowerInvariant().Contains(search)
-                || i.Number.ToLowerInvariant().Contains(search)
-            );
-        }
-
-        if (query.Status.HasValue)
-        {
-            filtered = filtered.Where(i => i.Status == query.Status.Value);
-        }
-
-        var totalCount = filtered.Count();
-
-        var skip = (query.Page - 1) * query.PageSize;
-        var items = filtered.Skip(skip).Take(query.PageSize).ToList();
-
-        return Task.FromResult(new PagedResult<InvoiceListItemDto>(items, totalCount));
     }
 
     public Task<Result<int>> SaveAsync(
@@ -123,29 +86,6 @@ public sealed class FakeInvoiceService : IInvoiceService
         }
 
         _deletedIds.Add(id);
-        _invoices.RemoveAll(i => i.Id == id);
         return Task.FromResult(Result.Success());
-    }
-
-    public Task<InvoiceDetailsDto?> GetDetailsAsync(int id, CancellationToken ct = default)
-    {
-        return Task.FromResult<InvoiceDetailsDto?>(null);
-    }
-
-    public Task<IReadOnlyList<CustomerLookupDto>> GetCustomersForDropdownAsync(
-        CancellationToken ct = default
-    )
-    {
-        return Task.FromResult<IReadOnlyList<CustomerLookupDto>>([]);
-    }
-
-    public Task<InvoiceStatsDto> GetStatsAsync(CancellationToken ct = default)
-    {
-        int draft = _invoices.Count(i => i.Status == InvoiceStatus.Draft);
-        int sent = _invoices.Count(i => i.Status == InvoiceStatus.Sent);
-        int paid = _invoices.Count(i => i.Status == InvoiceStatus.Paid);
-        int cancelled = _invoices.Count(i => i.Status == InvoiceStatus.Cancelled);
-        int total = draft + sent + paid + cancelled;
-        return Task.FromResult(new InvoiceStatsDto(total, draft, sent, paid, cancelled));
     }
 }

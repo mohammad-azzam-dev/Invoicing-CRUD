@@ -10,7 +10,10 @@ namespace InvoiceApp.Components.Pages.Invoices;
 public sealed partial class Index : IDisposable
 {
     [Inject]
-    private IInvoiceService InvoiceService { get; set; } = default!;
+    private IInvoiceQueryService QueryService { get; set; } = default!;
+
+    [Inject]
+    private IInvoiceCommandService CommandService { get; set; } = default!;
 
     [Inject]
     private DialogService DialogService { get; set; } = default!;

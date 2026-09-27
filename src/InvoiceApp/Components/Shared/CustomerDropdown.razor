@@ -1,6 +1,6 @@
 @using InvoiceApp.Features.Invoices.Dtos
 @using InvoiceApp.Features.Invoices.Interfaces
-@inject IInvoiceService InvoiceService
+@inject IInvoiceQueryService QueryService
 
 <RadzenDropDown @bind-Value="Value"
                 @bind-Value:after="OnValueChanged"
@@ -47,7 +47,7 @@
             return;
         }
 
-        _customers = await InvoiceService.GetCustomersForDropdownAsync();
+        _customers = await QueryService.GetCustomersForDropdownAsync();
         _customersLoaded = true;
     }
 

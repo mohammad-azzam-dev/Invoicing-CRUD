@@ -252,6 +252,14 @@ public sealed class InvoiceRepository(
             .FirstOrDefaultAsync(i => i.Id == id, ct);
     }
 
+    public async Task<Invoice?> GetForEditAsync(int id, CancellationToken ct = default)
+    {
+        await using AppDbContext db = await dbFactory.CreateDbContextAsync(ct);
+        return await db
+            .Invoices.Include(i => i.LineItems)
+            .FirstOrDefaultAsync(i => i.Id == id, ct);
+    }
+
     public async Task<int> AddAsync(Invoice invoice, CancellationToken ct = default)
     {
         await using AppDbContext db = await dbFactory.CreateDbContextAsync(ct);

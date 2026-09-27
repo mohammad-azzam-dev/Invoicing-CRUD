@@ -53,8 +53,10 @@ public sealed class InvoiceListComponentTests : BunitContext
     public void EmptyList_RendersNoInvoicesMessage()
     {
         // Arrange
-        FakeInvoiceService fakeService = new();
-        Services.AddSingleton<IInvoiceService>(fakeService);
+        FakeInvoiceQueryService fakeQueryService = new();
+        FakeInvoiceCommandService fakeCommandService = new();
+        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
+        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
 
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
@@ -67,8 +69,9 @@ public sealed class InvoiceListComponentTests : BunitContext
     public void WithInvoices_RendersInvoiceData()
     {
         // Arrange
-        FakeInvoiceService fakeService = new();
-        fakeService.SetInvoices(
+        FakeInvoiceQueryService fakeQueryService = new();
+        FakeInvoiceCommandService fakeCommandService = new();
+        fakeQueryService.SetInvoices(
             new List<InvoiceListItemDto>
             {
                 CreateDto(
@@ -95,7 +98,8 @@ public sealed class InvoiceListComponentTests : BunitContext
                 ),
             }
         );
-        Services.AddSingleton<IInvoiceService>(fakeService);
+        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
+        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
 
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
@@ -111,8 +115,10 @@ public sealed class InvoiceListComponentTests : BunitContext
     public void PageTitle_ContainsInvoices()
     {
         // Arrange
-        FakeInvoiceService fakeService = new();
-        Services.AddSingleton<IInvoiceService>(fakeService);
+        FakeInvoiceQueryService fakeQueryService = new();
+        FakeInvoiceCommandService fakeCommandService = new();
+        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
+        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
 
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
@@ -125,8 +131,10 @@ public sealed class InvoiceListComponentTests : BunitContext
     public void NewInvoiceButton_IsDisabled()
     {
         // Arrange
-        FakeInvoiceService fakeService = new();
-        Services.AddSingleton<IInvoiceService>(fakeService);
+        FakeInvoiceQueryService fakeQueryService = new();
+        FakeInvoiceCommandService fakeCommandService = new();
+        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
+        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
 
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
@@ -140,8 +148,9 @@ public sealed class InvoiceListComponentTests : BunitContext
     public void OverdueInvoice_ShowsOverdueBadge()
     {
         // Arrange
-        FakeInvoiceService fakeService = new();
-        fakeService.SetInvoices(
+        FakeInvoiceQueryService fakeQueryService = new();
+        FakeInvoiceCommandService fakeCommandService = new();
+        fakeQueryService.SetInvoices(
             new List<InvoiceListItemDto>
             {
                 CreateDto(
@@ -157,7 +166,8 @@ public sealed class InvoiceListComponentTests : BunitContext
                 ),
             }
         );
-        Services.AddSingleton<IInvoiceService>(fakeService);
+        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
+        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
 
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
@@ -170,8 +180,9 @@ public sealed class InvoiceListComponentTests : BunitContext
     public void StatusBadges_RenderedForAllStatuses()
     {
         // Arrange
-        FakeInvoiceService fakeService = new();
-        fakeService.SetInvoices(
+        FakeInvoiceQueryService fakeQueryService = new();
+        FakeInvoiceCommandService fakeCommandService = new();
+        fakeQueryService.SetInvoices(
             new List<InvoiceListItemDto>
             {
                 CreateDto(
@@ -220,7 +231,8 @@ public sealed class InvoiceListComponentTests : BunitContext
                 ),
             }
         );
-        Services.AddSingleton<IInvoiceService>(fakeService);
+        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
+        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
 
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
@@ -236,8 +248,9 @@ public sealed class InvoiceListComponentTests : BunitContext
     public void ActionsMenu_VisibleForDraftInvoices()
     {
         // Arrange
-        FakeInvoiceService fakeService = new();
-        fakeService.SetInvoices(
+        FakeInvoiceQueryService fakeQueryService = new();
+        FakeInvoiceCommandService fakeCommandService = new();
+        fakeQueryService.SetInvoices(
             new List<InvoiceListItemDto>
             {
                 CreateDto(
@@ -253,7 +266,8 @@ public sealed class InvoiceListComponentTests : BunitContext
                 ),
             }
         );
-        Services.AddSingleton<IInvoiceService>(fakeService);
+        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
+        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
 
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
@@ -268,8 +282,9 @@ public sealed class InvoiceListComponentTests : BunitContext
     public void ActionsMenu_VisibleForFinalStatusInvoices_WithViewOnly(InvoiceStatus status)
     {
         // Arrange
-        FakeInvoiceService fakeService = new();
-        fakeService.SetInvoices(
+        FakeInvoiceQueryService fakeQueryService = new();
+        FakeInvoiceCommandService fakeCommandService = new();
+        fakeQueryService.SetInvoices(
             new List<InvoiceListItemDto>
             {
                 CreateDto(
@@ -285,7 +300,8 @@ public sealed class InvoiceListComponentTests : BunitContext
                 ),
             }
         );
-        Services.AddSingleton<IInvoiceService>(fakeService);
+        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
+        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
 
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
@@ -301,8 +317,9 @@ public sealed class InvoiceListComponentTests : BunitContext
     public void ActionsMenu_VisibleForSentInvoices()
     {
         // Arrange
-        FakeInvoiceService fakeService = new();
-        fakeService.SetInvoices(
+        FakeInvoiceQueryService fakeQueryService = new();
+        FakeInvoiceCommandService fakeCommandService = new();
+        fakeQueryService.SetInvoices(
             new List<InvoiceListItemDto>
             {
                 CreateDto(
@@ -318,7 +335,8 @@ public sealed class InvoiceListComponentTests : BunitContext
                 ),
             }
         );
-        Services.AddSingleton<IInvoiceService>(fakeService);
+        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
+        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
 
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
@@ -331,8 +349,9 @@ public sealed class InvoiceListComponentTests : BunitContext
     public void ActionsMenu_VisibleForDraftAndSentInMixedList()
     {
         // Arrange
-        FakeInvoiceService fakeService = new();
-        fakeService.SetInvoices(
+        FakeInvoiceQueryService fakeQueryService = new();
+        FakeInvoiceCommandService fakeCommandService = new();
+        fakeQueryService.SetInvoices(
             new List<InvoiceListItemDto>
             {
                 CreateDto(
@@ -381,7 +400,8 @@ public sealed class InvoiceListComponentTests : BunitContext
                 ),
             }
         );
-        Services.AddSingleton<IInvoiceService>(fakeService);
+        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
+        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
 
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
@@ -394,8 +414,9 @@ public sealed class InvoiceListComponentTests : BunitContext
     public void DraftInvoice_ShowsStatusDropdownWithSentAndCancelled()
     {
         // Arrange
-        FakeInvoiceService fakeService = new();
-        fakeService.SetInvoices(
+        FakeInvoiceQueryService fakeQueryService = new();
+        FakeInvoiceCommandService fakeCommandService = new();
+        fakeQueryService.SetInvoices(
             new List<InvoiceListItemDto>
             {
                 CreateDto(
@@ -411,7 +432,8 @@ public sealed class InvoiceListComponentTests : BunitContext
                 ),
             }
         );
-        Services.AddSingleton<IInvoiceService>(fakeService);
+        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
+        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
 
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
@@ -428,8 +450,9 @@ public sealed class InvoiceListComponentTests : BunitContext
     public void SentInvoice_ShowsStatusDropdownWithPaidAndCancelled()
     {
         // Arrange
-        FakeInvoiceService fakeService = new();
-        fakeService.SetInvoices(
+        FakeInvoiceQueryService fakeQueryService = new();
+        FakeInvoiceCommandService fakeCommandService = new();
+        fakeQueryService.SetInvoices(
             new List<InvoiceListItemDto>
             {
                 CreateDto(
@@ -445,7 +468,8 @@ public sealed class InvoiceListComponentTests : BunitContext
                 ),
             }
         );
-        Services.AddSingleton<IInvoiceService>(fakeService);
+        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
+        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
 
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
@@ -459,8 +483,9 @@ public sealed class InvoiceListComponentTests : BunitContext
     public void PaidInvoice_HidesStatusDropdown()
     {
         // Arrange
-        FakeInvoiceService fakeService = new();
-        fakeService.SetInvoices(
+        FakeInvoiceQueryService fakeQueryService = new();
+        FakeInvoiceCommandService fakeCommandService = new();
+        fakeQueryService.SetInvoices(
             new List<InvoiceListItemDto>
             {
                 CreateDto(
@@ -476,7 +501,8 @@ public sealed class InvoiceListComponentTests : BunitContext
                 ),
             }
         );
-        Services.AddSingleton<IInvoiceService>(fakeService);
+        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
+        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
 
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
@@ -490,8 +516,9 @@ public sealed class InvoiceListComponentTests : BunitContext
     public void CancelledInvoice_HidesStatusDropdown()
     {
         // Arrange
-        FakeInvoiceService fakeService = new();
-        fakeService.SetInvoices(
+        FakeInvoiceQueryService fakeQueryService = new();
+        FakeInvoiceCommandService fakeCommandService = new();
+        fakeQueryService.SetInvoices(
             new List<InvoiceListItemDto>
             {
                 CreateDto(
@@ -507,7 +534,8 @@ public sealed class InvoiceListComponentTests : BunitContext
                 ),
             }
         );
-        Services.AddSingleton<IInvoiceService>(fakeService);
+        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
+        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
 
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
@@ -520,8 +548,9 @@ public sealed class InvoiceListComponentTests : BunitContext
     public void MixedStatuses_DraftAndSentHaveStatusDropdowns()
     {
         // Arrange
-        FakeInvoiceService fakeService = new();
-        fakeService.SetInvoices(
+        FakeInvoiceQueryService fakeQueryService = new();
+        FakeInvoiceCommandService fakeCommandService = new();
+        fakeQueryService.SetInvoices(
             new List<InvoiceListItemDto>
             {
                 CreateDto(
@@ -570,7 +599,8 @@ public sealed class InvoiceListComponentTests : BunitContext
                 ),
             }
         );
-        Services.AddSingleton<IInvoiceService>(fakeService);
+        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
+        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
 
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();

@@ -11,7 +11,7 @@ public static class InvoiceCalculations
         Round(item.GrossAmount() * item.DiscountPercent / 100);
 
     public static decimal LineTotal(this LineItem item) =>
-        Round(item.GrossAmount()) - item.DiscountAmount();
+        CalculateLineTotal(item.Quantity, item.UnitPrice, item.DiscountPercent);
 
     public static decimal CalculateLineTotal(
         decimal quantity,
@@ -39,7 +39,7 @@ public static class InvoiceCalculations
         items.Sum(item => item.DiscountAmount());
 
     public static decimal TaxAmount(Invoice invoice, IEnumerable<LineItem> items) =>
-        Round(Subtotal(items) * invoice.TaxRate / 100);
+        CalculateTaxAmount(Subtotal(items), invoice.TaxRate);
 
     public static decimal Total(Invoice invoice, IEnumerable<LineItem> items) =>
         Subtotal(items) + TaxAmount(invoice, items);

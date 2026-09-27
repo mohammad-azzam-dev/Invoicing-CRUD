@@ -8,6 +8,7 @@ using InvoiceApp.Features.Account.Services;
 using InvoiceApp.Features.Account.Validators;
 using InvoiceApp.Features.Invoices.Interfaces;
 using InvoiceApp.Features.Invoices.Services;
+using InvoiceApp.Features.Invoices.Validators;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.Sqlite;
@@ -64,7 +65,9 @@ builder.Services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
 builder.Services.AddScoped<IRegisterService, RegisterService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
-builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+builder.Services.AddScoped<InvoiceFormValidator>();
+builder.Services.AddScoped<IInvoiceQueryService, InvoiceQueryService>();
+builder.Services.AddScoped<IInvoiceCommandService, InvoiceCommandService>();
 
 WebApplication app = builder.Build();
 

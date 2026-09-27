@@ -13,7 +13,10 @@ public partial class InvoiceForm
     public int Id { get; set; }
 
     [Inject]
-    private IInvoiceService InvoiceService { get; set; } = null!;
+    private IInvoiceQueryService QueryService { get; set; } = null!;
+
+    [Inject]
+    private IInvoiceCommandService CommandService { get; set; } = null!;
 
     [Inject]
     private NavigationManager Navigation { get; set; } = null!;
@@ -39,7 +42,7 @@ public partial class InvoiceForm
     {
         if (!_isCreateMode)
         {
-            _invoice = await InvoiceService.GetDetailsAsync(Id);
+            _invoice = await QueryService.GetDetailsAsync(Id);
 
             if (_invoice is not null)
             {
@@ -66,7 +69,7 @@ public partial class InvoiceForm
             InvoiceFormDto formDto = _formModel.ToDto();
             List<LineItemFormDto> lineItemDtos = _lineItems.Select(i => i.ToDto()).ToList();
 
-            var result = await InvoiceService.SaveAsync(Id, formDto, lineItemDtos);
+            var result = await CommandService.SaveAsync(Id, formDto, lineItemDtos);
 
             if (result.IsSuccess)
             {
@@ -91,7 +94,7 @@ public partial class InvoiceForm
                 }
 
                 // Refresh data after update
-                _invoice = await InvoiceService.GetDetailsAsync(Id);
+                _invoice = await QueryService.GetDetailsAsync(Id);
                 if (_invoice is not null)
                 {
                     _formModel = InvoiceFormModel.FromDetails(_invoice);

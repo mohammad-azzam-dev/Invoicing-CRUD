@@ -20,7 +20,7 @@ public sealed partial class Index
                 Page: (args.Skip ?? 0) / (args.Top ?? DefaultPageSize) + DefaultPage,
                 PageSize: args.Top ?? DefaultPageSize
             );
-            PagedResult<InvoiceListItemDto> result = await InvoiceService.GetPagedAsync(query);
+            PagedResult<InvoiceListItemDto> result = await QueryService.GetPagedAsync(query);
             _invoices = result.Items;
             _count = result.TotalCount;
             _currentPage = query.Page;
