@@ -15,6 +15,47 @@ I could have used a layered design where each part is its own .NET project (for 
 
 The layers and the dependency direction are the same as in the multi-project version (Components → Features → Domain, with Data implementing the Features interfaces). Only the compiler doesn't enforce the boundaries. If the app grows, each folder can be moved into its own project without redesigning it.
 
+## State management and data binding
+
+The app runs as Blazor Server with interactive server rendering, so every page keeps its state on the server for the user's connection (the circuit). I didn't add a global state store: each page owns its own state and reloads from the database when it opens. For an app with a few independent pages, a shared store would add complexity without solving a real problem.
+
+**Form models are separate from DTOs.** Each form binds to its own UI model (for example `InvoiceFormModel` and `LineItemFormModel`), which uses data annotations for quick checks in the browser. When you save, the model is converted into a DTO (`ToDto()`) and sent to a service. The service runs the FluentValidation rules, which are the real source of truth. The domain entities are never bound to the UI directly, so a half-edited form can't change an entity.
+
+**Binding inside the invoice form.** The invoice page is split into child components, and the parent holds the state:
+
+- `InvoiceHeaderForm` binds the customer, dates and tax rate with two-way `@bind-Value`. The date pickers work with `DateTime?`, so the component converts to and from the model's `DateOnly`. When the issue date moves past the due date, it moves the due date to issue date + 30 days.
+- `LineItemsGrid` edits the parent's list of line items in place using Radzen's inline row editing. Before a row is edited it keeps a copy, so Cancel can restore the old values.
+- `InvoiceTotals` gets the line items and tax rate as parameters and calculates Subtotal, Tax and Total on every render with the same `InvoiceCalculations` code the server uses, so the totals update while you type.
+- Each child reports changes to the parent through an `EventCallback OnChange`. The parent uses it to set a `_hasUnsavedChanges` flag. A `NavigationLock` reads that flag: it asks before you leave the page inside the app, and the browser asks before you close or refresh the tab.
+
+**Loading and reloading data.**
+
+- Pages load their data in lifecycle methods. The invoice form uses `OnParametersSetAsync` and remembers which id it loaded, so going from `/invoices/new` to `/invoices/{id}` after a save loads the new invoice instead of reusing the old state.
+- The invoice and customer lists use server-side paging and sorting through Radzen's `LoadData` event, so only one page of rows is loaded at a time. The search box waits 300 ms after you stop typing before it reloads.
+- The customer dropdown reloads its list every time it opens, so a customer added in another tab shows up.
+- After a save, delete or status change, the page reloads the affected data from the server instead of patching its local copy, so what you see is always what's stored.
+
+**Database access.** Repositories get a new, short-lived `DbContext` from `IDbContextFactory` for each operation instead of sharing one. A Blazor Server circuit can stay open for hours, and a single long-lived `DbContext` would build up tracked entities and isn't safe to use from overlapping async calls. Read queries use `AsNoTracking()` and select straight into DTOs.
+
+**Errors.** Services return a `Result` (success, or a message) instead of throwing for business rule failures. Pages show the message in a toast or an inline alert, so the user always sees why something didn't work.
+
+**Settings.** Paging defaults (page size and the page size options) come from `appsettings.json` through the options pattern (`PaginationSettings`) instead of being hard-coded in each page.
+
+## UX choices
+
+- **One page to create, edit and view an invoice.** `/invoices/new` and `/invoices/{id}` use the same form. When an invoice is no longer a Draft, the same page opens read-only, with the fields disabled and only a Back to List button. The user always sees an invoice laid out the same way, and the "only drafts can be edited" rule is visible instead of being an error after the fact.
+- **Line items are edited inside the grid.** You add, edit and remove rows directly in the table instead of opening a separate dialog for each item, which is faster when an invoice has many lines. Only one row can be open at a time, so it's always clear which row you're changing.
+- **Totals update as you type**, so you can check the amounts before saving.
+- **Two save buttons.** "Save & Continue" keeps you on the invoice so you can keep working. "Save Invoice" / "Save Changes" returns you to the list.
+- **The row menu shows only what you can do.** Each row's ⋮ menu is built from the invoice's status: Edit and Delete appear only for drafts, and Change Status offers only the next allowed statuses. The user can't pick an action that would fail.
+- **Confirmation only for actions you can't undo.** Deleting an invoice or customer, and marking an invoice Paid or Cancelled, ask for confirmation. Everyday actions like saving don't, so the dialogs keep their meaning.
+- **Protection against losing work.** Leaving an invoice or closing a customer dialog with unsaved changes asks first.
+- **Customers are edited in a dialog.** A customer has only a few fields, so a dialog over the list is quicker than a separate page, and you stay where you were in the list.
+- **Clear feedback.** Every save, delete and status change shows a toast with the result. Validation errors from the server appear as a toast on the invoice form and as an inline alert in the customer and profile forms. Buttons show a busy state while saving, so a double-click doesn't submit twice.
+- **Status is visible at a glance.** Statuses are colored badges in the list, overdue due dates are shown in red, and the dashboard cards count invoices by status.
+- **Helpful empty states.** An empty list explains what to do next: "Create your first invoice to get started" when there's no data, or "Try adjusting your search or filter criteria" when a search finds nothing.
+- **Search that fits how people look for invoices.** One box searches by customer name, company name or invoice number, and the number works as `INV-00012`, `inv-12` or `12`.
+
 ## Getting started
 
 Requirements: .NET 10 SDK.
