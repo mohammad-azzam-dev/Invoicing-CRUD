@@ -21,7 +21,11 @@ public sealed class CustomerRepository(IDbContextFactory<AppDbContext> dbFactory
         IQueryable<Customer> baseQuery = db.Customers.AsNoTracking();
         IQueryable<Customer> filtered = ApplyFilters(baseQuery, query);
         int totalCount = await filtered.CountAsync(ct);
-        IOrderedQueryable<Customer> ordered = ApplySorting(filtered, query.SortBy, query.Descending);
+        IOrderedQueryable<Customer> ordered = ApplySorting(
+            filtered,
+            query.SortBy,
+            query.Descending
+        );
 
         int skip = (query.Page - 1) * query.PageSize;
         List<CustomerProjection> items = await GetCustomerProjection(ordered)
@@ -76,7 +80,9 @@ public sealed class CustomerRepository(IDbContextFactory<AppDbContext> dbFactory
             (CustomerSortField.Email, false) => query.OrderBy(c => c.Email),
             (CustomerSortField.Phone, true) => query.OrderByDescending(c => c.Phone),
             (CustomerSortField.Phone, false) => query.OrderBy(c => c.Phone),
-            (CustomerSortField.InvoiceCount, true) => query.OrderByDescending(c => c.Invoices.Count),
+            (CustomerSortField.InvoiceCount, true) => query.OrderByDescending(c =>
+                c.Invoices.Count
+            ),
             (CustomerSortField.InvoiceCount, false) => query.OrderBy(c => c.Invoices.Count),
             _ => query.OrderBy(c => c.CompanyName ?? c.Name),
         };
@@ -84,7 +90,10 @@ public sealed class CustomerRepository(IDbContextFactory<AppDbContext> dbFactory
         return ordered.ThenBy(c => c.Id);
     }
 
-    private static IQueryable<Customer> ApplyFilters(IQueryable<Customer> query, CustomerQuery filters)
+    private static IQueryable<Customer> ApplyFilters(
+        IQueryable<Customer> query,
+        CustomerQuery filters
+    )
     {
         if (!string.IsNullOrWhiteSpace(filters.Search))
         {
@@ -105,6 +114,7 @@ public sealed class CustomerRepository(IDbContextFactory<AppDbContext> dbFactory
         await using AppDbContext db = await dbFactory.CreateDbContextAsync(ct);
         return await db.Customers.FindAsync([id], ct);
     }
+
     public async Task<CustomerWithInvoiceCount?> GetByIdWithInvoiceCountAsync(
         int id,
         CancellationToken ct = default
@@ -118,7 +128,6 @@ public sealed class CustomerRepository(IDbContextFactory<AppDbContext> dbFactory
             .Select(c => new CustomerWithInvoiceCount(c, c.Invoices.Count))
             .FirstOrDefaultAsync(ct);
     }
-
 
     public async Task<bool> EmailExistsAsync(
         string email,

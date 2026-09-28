@@ -84,12 +84,14 @@ public sealed class CustomerTestHelper : IAsyncDisposable
         db.Customers.Add(customer);
         await db.SaveChangesAsync();
 
-        Invoice invoice = Invoice.Create(
-            customer.Id,
-            DateOnly.FromDateTime(DateTime.Today),
-            DateOnly.FromDateTime(DateTime.Today.AddDays(30)),
-            10m
-        ).Value!;
+        Invoice invoice = Invoice
+            .Create(
+                customer.Id,
+                DateOnly.FromDateTime(DateTime.Today),
+                DateOnly.FromDateTime(DateTime.Today.AddDays(30)),
+                10m
+            )
+            .Value!;
         db.Invoices.Add(invoice);
         await db.SaveChangesAsync();
 

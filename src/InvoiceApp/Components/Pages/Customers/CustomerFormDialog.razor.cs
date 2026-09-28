@@ -37,7 +37,9 @@ public sealed partial class CustomerFormDialog
             _isLoading = true;
             try
             {
-                CustomerDetailsDto? details = await CustomerService.GetDetailsAsync(CustomerId!.Value);
+                CustomerDetailsDto? details = await CustomerService.GetDetailsAsync(
+                    CustomerId!.Value
+                );
                 if (details is not null)
                 {
                     _form = new CustomerFormModel

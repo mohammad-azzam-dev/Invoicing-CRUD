@@ -90,8 +90,8 @@ public sealed class InvoiceCreateTests
         InvoiceFormDto form = new(customerId, FixedToday, FixedToday.AddDays(30), taxRate);
         List<LineItemFormDto> lineItems =
         [
-            new(0, "Item 1", 2m, 100m, 10m),  // Gross=200, Discount=20, LineTotal=180
-            new(0, "Item 2", 1m, 50m, 0m),    // Gross=50, Discount=0, LineTotal=50
+            new(0, "Item 1", 2m, 100m, 10m), // Gross=200, Discount=20, LineTotal=180
+            new(0, "Item 2", 1m, 50m, 0m), // Gross=50, Discount=0, LineTotal=50
             new(0, "Item 3", 3m, 33.33m, 5m), // Gross=99.99, Discount=5.00, LineTotal=94.99
         ];
 
@@ -143,10 +143,7 @@ public sealed class InvoiceCreateTests
         int customerId = await helper.SeedCustomerAsync();
 
         InvoiceFormDto form = InvoiceTestHelper.CreateValidForm(customerId);
-        List<LineItemFormDto> lineItems =
-        [
-            new(0, "Free Sample", 1m, 0m, 0m),
-        ];
+        List<LineItemFormDto> lineItems = [new(0, "Free Sample", 1m, 0m, 0m)];
 
         // Act
         Result<int> result = await helper.CommandService.SaveAsync(0, form, lineItems);
@@ -164,10 +161,7 @@ public sealed class InvoiceCreateTests
         int customerId = await helper.SeedCustomerAsync();
 
         InvoiceFormDto form = InvoiceTestHelper.CreateValidForm(customerId);
-        List<LineItemFormDto> lineItems =
-        [
-            new(0, "100% Discounted", 2m, 100m, 100m),
-        ];
+        List<LineItemFormDto> lineItems = [new(0, "100% Discounted", 2m, 100m, 100m)];
 
         // Act
         Result<int> result = await helper.CommandService.SaveAsync(0, form, lineItems);
@@ -329,10 +323,7 @@ public sealed class InvoiceCreateTests
         int customerId = await helper.SeedCustomerAsync();
 
         InvoiceFormDto form = InvoiceTestHelper.CreateValidForm(customerId);
-        List<LineItemFormDto> lineItems =
-        [
-            new(0, "  Padded Description  ", 1m, 100m, 0m),
-        ];
+        List<LineItemFormDto> lineItems = [new(0, "  Padded Description  ", 1m, 100m, 0m)];
 
         // Act
         Result<int> result = await helper.CommandService.SaveAsync(0, form, lineItems);
@@ -356,10 +347,7 @@ public sealed class InvoiceCreateTests
 
         decimal taxRate = 12.34m;
         InvoiceFormDto form = new(customerId, FixedToday, FixedToday.AddDays(30), taxRate);
-        List<LineItemFormDto> lineItems =
-        [
-            new(0, "Precise Item", 1.23m, 45.67m, 8.9m),
-        ];
+        List<LineItemFormDto> lineItems = [new(0, "Precise Item", 1.23m, 45.67m, 8.9m)];
 
         // Act
         Result<int> result = await helper.CommandService.SaveAsync(0, form, lineItems);

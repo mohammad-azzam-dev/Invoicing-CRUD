@@ -91,7 +91,11 @@ public sealed class ProfileService(
         if (!validationResult.IsValid)
         {
             string error = validationResult.Errors.First().ErrorMessage;
-            logger.LogWarning("Password validation failed for user {UserId}: {Error}", userId, error);
+            logger.LogWarning(
+                "Password validation failed for user {UserId}: {Error}",
+                userId,
+                error
+            );
             return Result.Failure(error);
         }
 

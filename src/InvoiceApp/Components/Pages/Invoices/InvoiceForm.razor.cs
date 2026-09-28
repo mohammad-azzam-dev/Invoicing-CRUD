@@ -96,7 +96,9 @@ public partial class InvoiceForm
                 NotificationService.Notify(
                     NotificationSeverity.Success,
                     "Success",
-                    _isCreateMode ? "Invoice created successfully." : "Invoice updated successfully."
+                    _isCreateMode
+                        ? "Invoice created successfully."
+                        : "Invoice updated successfully."
                 );
 
                 if (navigateAfterSave)

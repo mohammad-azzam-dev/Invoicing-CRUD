@@ -27,8 +27,11 @@ public sealed class InvoiceCommandService(
 
         try
         {
-            Result<(Invoice, ICollection<LineItem>)> prepareResult =
-                await PrepareInvoiceDataAsync(id, form, ct);
+            Result<(Invoice, ICollection<LineItem>)> prepareResult = await PrepareInvoiceDataAsync(
+                id,
+                form,
+                ct
+            );
 
             if (!prepareResult.IsSuccess)
             {
@@ -167,7 +170,6 @@ public sealed class InvoiceCommandService(
     {
         if (id == 0)
         {
-            
             Result<Invoice> createResult = Invoice.Create(
                 form.CustomerId,
                 form.IssueDate,
@@ -180,9 +182,7 @@ public sealed class InvoiceCommandService(
                 return Result<(Invoice, ICollection<LineItem>)>.Failure(createResult.Error!);
             }
 
-            return Result<(Invoice, ICollection<LineItem>)>.Success(
-                (createResult.Value!, [])
-            );
+            return Result<(Invoice, ICollection<LineItem>)>.Success((createResult.Value!, []));
         }
 
         Invoice? existing = await repository.GetForEditAsync(id, ct);
@@ -217,8 +217,6 @@ public sealed class InvoiceCommandService(
             return Result<(Invoice, ICollection<LineItem>)>.Failure(updateResult.Error!);
         }
 
-        return Result<(Invoice, ICollection<LineItem>)>.Success(
-            (existing, existing.LineItems)
-        );
+        return Result<(Invoice, ICollection<LineItem>)>.Success((existing, existing.LineItems));
     }
 }

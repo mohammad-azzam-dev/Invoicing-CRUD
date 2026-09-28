@@ -28,9 +28,7 @@ public sealed class CustomerRepositoryTests
 
         // Assert
         result.Items.ShouldNotBeEmpty();
-        result.Items.ShouldAllBe(c =>
-            c.Name.Contains("John", StringComparison.OrdinalIgnoreCase)
-        );
+        result.Items.ShouldAllBe(c => c.Name.Contains("John", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -50,7 +48,8 @@ public sealed class CustomerRepositoryTests
         // Assert
         result.Items.ShouldNotBeEmpty();
         result.Items.ShouldAllBe(c =>
-            c.CompanyName != null && c.CompanyName.Contains("Acme", StringComparison.OrdinalIgnoreCase)
+            c.CompanyName != null
+            && c.CompanyName.Contains("Acme", StringComparison.OrdinalIgnoreCase)
         );
     }
 
@@ -210,12 +209,14 @@ public sealed class CustomerRepositoryTests
         // Add 2 invoices
         for (int i = 0; i < 2; i++)
         {
-            Invoice invoice = Invoice.Create(
-                customer.Id,
-                DateOnly.FromDateTime(DateTime.Today),
-                DateOnly.FromDateTime(DateTime.Today.AddDays(30)),
-                10m
-            ).Value!;
+            Invoice invoice = Invoice
+                .Create(
+                    customer.Id,
+                    DateOnly.FromDateTime(DateTime.Today),
+                    DateOnly.FromDateTime(DateTime.Today.AddDays(30)),
+                    10m
+                )
+                .Value!;
             db.Invoices.Add(invoice);
         }
         await db.SaveChangesAsync();
@@ -295,7 +296,12 @@ public sealed class CustomerRepositoryTests
         CustomerRepository repository = new(testDb.Factory);
 
         await using AppDbContext db = await testDb.Factory.CreateDbContextAsync();
-        Customer customer = Customer.Create("John Doe", "555-0001", "john@example.com", "Acme Corp");
+        Customer customer = Customer.Create(
+            "John Doe",
+            "555-0001",
+            "john@example.com",
+            "Acme Corp"
+        );
         db.Customers.Add(customer);
         await db.SaveChangesAsync();
 
@@ -340,10 +346,26 @@ public sealed class CustomerRepositoryTests
     {
         int primary = sortBy switch
         {
-            CustomerSortField.DisplayName => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase),
-            CustomerSortField.Name => string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase),
-            CustomerSortField.Email => string.Compare(a.Email, b.Email, StringComparison.OrdinalIgnoreCase),
-            CustomerSortField.Phone => string.Compare(a.Phone, b.Phone, StringComparison.OrdinalIgnoreCase),
+            CustomerSortField.DisplayName => string.Compare(
+                a.DisplayName,
+                b.DisplayName,
+                StringComparison.OrdinalIgnoreCase
+            ),
+            CustomerSortField.Name => string.Compare(
+                a.Name,
+                b.Name,
+                StringComparison.OrdinalIgnoreCase
+            ),
+            CustomerSortField.Email => string.Compare(
+                a.Email,
+                b.Email,
+                StringComparison.OrdinalIgnoreCase
+            ),
+            CustomerSortField.Phone => string.Compare(
+                a.Phone,
+                b.Phone,
+                StringComparison.OrdinalIgnoreCase
+            ),
             CustomerSortField.InvoiceCount => a.InvoiceCount.CompareTo(b.InvoiceCount),
             _ => 0,
         };
@@ -368,12 +390,14 @@ public sealed class CustomerRepositoryTests
         await db.SaveChangesAsync();
 
         // Add some invoices to vary invoice count
-        Invoice invoice = Invoice.Create(
-            customers[0].Id,
-            DateOnly.FromDateTime(DateTime.Today),
-            DateOnly.FromDateTime(DateTime.Today.AddDays(30)),
-            10m
-        ).Value!;
+        Invoice invoice = Invoice
+            .Create(
+                customers[0].Id,
+                DateOnly.FromDateTime(DateTime.Today),
+                DateOnly.FromDateTime(DateTime.Today.AddDays(30)),
+                10m
+            )
+            .Value!;
         db.Invoices.Add(invoice);
         await db.SaveChangesAsync();
     }

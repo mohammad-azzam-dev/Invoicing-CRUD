@@ -33,7 +33,8 @@ public sealed class ChangeEmailDtoValidatorTests
         TestValidationResult<ChangeEmailDto> result = _validator.TestValidate(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.NewEmail)
+        result
+            .ShouldHaveValidationErrorFor(x => x.NewEmail)
             .WithErrorMessage("Email is required.");
     }
 
@@ -50,7 +51,8 @@ public sealed class ChangeEmailDtoValidatorTests
         TestValidationResult<ChangeEmailDto> result = _validator.TestValidate(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.NewEmail)
+        result
+            .ShouldHaveValidationErrorFor(x => x.NewEmail)
             .WithErrorMessage("Email must be a valid email address.");
     }
 
@@ -65,7 +67,8 @@ public sealed class ChangeEmailDtoValidatorTests
         TestValidationResult<ChangeEmailDto> result = _validator.TestValidate(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.NewEmail)
+        result
+            .ShouldHaveValidationErrorFor(x => x.NewEmail)
             .WithErrorMessage("Email must not exceed 256 characters.");
     }
 }

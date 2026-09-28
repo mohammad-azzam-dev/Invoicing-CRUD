@@ -41,7 +41,8 @@ public sealed class ChangePasswordDtoValidatorTests
         TestValidationResult<ChangePasswordDto> result = _validator.TestValidate(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.CurrentPassword)
+        result
+            .ShouldHaveValidationErrorFor(x => x.CurrentPassword)
             .WithErrorMessage("Current password is required.");
     }
 
@@ -61,7 +62,8 @@ public sealed class ChangePasswordDtoValidatorTests
         TestValidationResult<ChangePasswordDto> result = _validator.TestValidate(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.NewPassword)
+        result
+            .ShouldHaveValidationErrorFor(x => x.NewPassword)
             .WithErrorMessage("Password is required.");
     }
 
@@ -79,7 +81,8 @@ public sealed class ChangePasswordDtoValidatorTests
         TestValidationResult<ChangePasswordDto> result = _validator.TestValidate(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.NewPassword)
+        result
+            .ShouldHaveValidationErrorFor(x => x.NewPassword)
             .WithErrorMessage("Password must be at least 8 characters.");
     }
 
@@ -97,7 +100,8 @@ public sealed class ChangePasswordDtoValidatorTests
         TestValidationResult<ChangePasswordDto> result = _validator.TestValidate(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.ConfirmPassword)
+        result
+            .ShouldHaveValidationErrorFor(x => x.ConfirmPassword)
             .WithErrorMessage("Passwords do not match.");
     }
 
@@ -117,7 +121,8 @@ public sealed class ChangePasswordDtoValidatorTests
         TestValidationResult<ChangePasswordDto> result = _validator.TestValidate(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.ConfirmPassword)
+        result
+            .ShouldHaveValidationErrorFor(x => x.ConfirmPassword)
             .WithErrorMessage("Please confirm the password.");
     }
 }

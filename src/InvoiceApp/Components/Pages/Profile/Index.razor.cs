@@ -34,7 +34,8 @@ public sealed partial class Index
 
     protected override async Task OnInitializedAsync()
     {
-        AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        AuthenticationState authState =
+            await AuthenticationStateProvider.GetAuthenticationStateAsync();
         _userId = authState.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (_userId is not null)

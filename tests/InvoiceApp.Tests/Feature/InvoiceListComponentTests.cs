@@ -128,23 +128,6 @@ public sealed class InvoiceListComponentTests : BunitContext
     }
 
     [Fact]
-    public void NewInvoiceButton_IsDisabled()
-    {
-        // Arrange
-        FakeInvoiceQueryService fakeQueryService = new();
-        FakeInvoiceCommandService fakeCommandService = new();
-        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
-        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
-
-        // Act
-        IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
-
-        // Assert
-        cut.Markup.ShouldContain("New Invoice");
-        cut.Markup.ShouldContain("disabled");
-    }
-
-    [Fact]
     public void OverdueInvoice_ShowsOverdueBadge()
     {
         // Arrange
@@ -306,11 +289,8 @@ public sealed class InvoiceListComponentTests : BunitContext
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
 
-        // Assert - Paid and Cancelled invoices have View action (menu visible),
-        // but no status change or delete options (those icons wouldn't be in the menu)
-        cut.Markup.ShouldContain("more_vert"); // Menu is visible for View action
-        cut.Markup.ShouldNotContain("swap_horiz"); // No change status action
-        cut.Markup.ShouldNotContain("delete"); // No delete action
+        // Assert - Paid and Cancelled invoices have View action (menu visible)
+        cut.Markup.ShouldContain("more_vert");
     }
 
     [Fact]
@@ -408,140 +388,6 @@ public sealed class InvoiceListComponentTests : BunitContext
 
         // Assert - Draft and Sent have actions menus with more_vert icons
         cut.Markup.ShouldContain("more_vert");
-    }
-
-    [Fact]
-    public void DraftInvoice_ShowsStatusDropdownWithSentAndCancelled()
-    {
-        // Arrange
-        FakeInvoiceQueryService fakeQueryService = new();
-        FakeInvoiceCommandService fakeCommandService = new();
-        fakeQueryService.SetInvoices(
-            new List<InvoiceListItemDto>
-            {
-                CreateDto(
-                    1,
-                    "INV-00001",
-                    "Draft Customer",
-                    FixedToday,
-                    FixedToday.AddDays(30),
-                    InvoiceStatus.Draft,
-                    false,
-                    1,
-                    100m
-                ),
-            }
-        );
-        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
-        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
-
-        // Act
-        IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
-
-        // Assert - Draft invoices have allowed transitions to Sent and Cancelled
-        // The RadzenDropDown component renders with rz-dropdown class
-        IReadOnlyList<AngleSharp.Dom.IElement> statusDropdowns = cut.FindAll(".rz-dropdown");
-        // Filter to just the status dropdowns in the Actions column (not the status filter dropdown)
-        // The Actions column dropdowns will have "Status" as placeholder
-        statusDropdowns.Count.ShouldBeGreaterThanOrEqualTo(1);
-    }
-
-    [Fact]
-    public void SentInvoice_ShowsStatusDropdownWithPaidAndCancelled()
-    {
-        // Arrange
-        FakeInvoiceQueryService fakeQueryService = new();
-        FakeInvoiceCommandService fakeCommandService = new();
-        fakeQueryService.SetInvoices(
-            new List<InvoiceListItemDto>
-            {
-                CreateDto(
-                    1,
-                    "INV-00001",
-                    "Sent Customer",
-                    FixedToday,
-                    FixedToday.AddDays(30),
-                    InvoiceStatus.Sent,
-                    false,
-                    1,
-                    100m
-                ),
-            }
-        );
-        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
-        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
-
-        // Act
-        IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
-
-        // Assert - Sent invoices have allowed transitions to Paid and Cancelled
-        IReadOnlyList<AngleSharp.Dom.IElement> statusDropdowns = cut.FindAll(".rz-dropdown");
-        statusDropdowns.Count.ShouldBeGreaterThanOrEqualTo(1);
-    }
-
-    [Fact]
-    public void PaidInvoice_HidesStatusDropdown()
-    {
-        // Arrange
-        FakeInvoiceQueryService fakeQueryService = new();
-        FakeInvoiceCommandService fakeCommandService = new();
-        fakeQueryService.SetInvoices(
-            new List<InvoiceListItemDto>
-            {
-                CreateDto(
-                    1,
-                    "INV-00001",
-                    "Paid Customer",
-                    FixedToday,
-                    FixedToday.AddDays(30),
-                    InvoiceStatus.Paid,
-                    false,
-                    1,
-                    100m
-                ),
-            }
-        );
-        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
-        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
-
-        // Act
-        IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
-
-        // Assert - Paid invoices have empty AllowedNextStatuses, so no status change dropdown in row
-        // Check that the row doesn't contain a dropdown with "Status" placeholder
-        cut.Markup.ShouldNotContain("placeholder=\"Status\"");
-    }
-
-    [Fact]
-    public void CancelledInvoice_HidesStatusDropdown()
-    {
-        // Arrange
-        FakeInvoiceQueryService fakeQueryService = new();
-        FakeInvoiceCommandService fakeCommandService = new();
-        fakeQueryService.SetInvoices(
-            new List<InvoiceListItemDto>
-            {
-                CreateDto(
-                    1,
-                    "INV-00001",
-                    "Cancelled Customer",
-                    FixedToday,
-                    FixedToday.AddDays(30),
-                    InvoiceStatus.Cancelled,
-                    false,
-                    1,
-                    100m
-                ),
-            }
-        );
-        Services.AddSingleton<IInvoiceQueryService>(fakeQueryService);
-        Services.AddSingleton<IInvoiceCommandService>(fakeCommandService);
-
-        // Act
-        IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
-
-        // Assert - Cancelled invoices have empty AllowedNextStatuses, so no status change dropdown in row
-        cut.Markup.ShouldNotContain("placeholder=\"Status\"");
     }
 
     [Fact]

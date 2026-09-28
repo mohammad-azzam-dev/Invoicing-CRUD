@@ -150,9 +150,18 @@ public sealed class InvoiceDeleteTests
         await using InvoiceTestHelper helper = await InvoiceTestHelper.CreateAsync();
         int customerId = await helper.SeedCustomerAsync();
 
-        int invoice1 = await helper.SeedInvoiceAsync(customerId, lineItems: [("Item 1", 1m, 100m, 0m)]);
-        int invoice2 = await helper.SeedInvoiceAsync(customerId, lineItems: [("Item 2", 2m, 200m, 5m)]);
-        int invoice3 = await helper.SeedInvoiceAsync(customerId, lineItems: [("Item 3", 3m, 300m, 10m)]);
+        int invoice1 = await helper.SeedInvoiceAsync(
+            customerId,
+            lineItems: [("Item 1", 1m, 100m, 0m)]
+        );
+        int invoice2 = await helper.SeedInvoiceAsync(
+            customerId,
+            lineItems: [("Item 2", 2m, 200m, 5m)]
+        );
+        int invoice3 = await helper.SeedInvoiceAsync(
+            customerId,
+            lineItems: [("Item 3", 3m, 300m, 10m)]
+        );
 
         // Act - Delete the middle one
         Result result = await helper.CommandService.DeleteAsync(invoice2);

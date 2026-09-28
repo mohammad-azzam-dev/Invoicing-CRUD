@@ -110,7 +110,7 @@ public sealed class CustomerServiceTests
 
         CustomerFormDto form = new(
             Id: null,
-            Name: "",  // Invalid: empty
+            Name: "", // Invalid: empty
             Email: "john@example.com",
             Phone: "555-1234",
             CompanyName: null,
@@ -210,7 +210,7 @@ public sealed class CustomerServiceTests
         CustomerFormDto form = new(
             Id: customerId,
             Name: "Updated Name",
-            Email: "same@example.com",  // Same email, should be allowed
+            Email: "same@example.com", // Same email, should be allowed
             Phone: "555-1111",
             CompanyName: null,
             Address: null
@@ -232,7 +232,7 @@ public sealed class CustomerServiceTests
 
         CustomerFormDto form = new(
             Id: customerId,
-            Name: "",  // Invalid
+            Name: "", // Invalid
             Email: "john@example.com",
             Phone: "555-1234",
             CompanyName: null,

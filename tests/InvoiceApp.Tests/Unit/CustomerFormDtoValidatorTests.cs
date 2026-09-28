@@ -74,8 +74,7 @@ public sealed class CustomerFormDtoValidatorTests
         TestValidationResult<CustomerFormDto> result = await _validator.TestValidateAsync(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Name)
-            .WithErrorMessage("Name is required.");
+        result.ShouldHaveValidationErrorFor(x => x.Name).WithErrorMessage("Name is required.");
     }
 
     [Fact]
@@ -96,7 +95,8 @@ public sealed class CustomerFormDtoValidatorTests
         TestValidationResult<CustomerFormDto> result = await _validator.TestValidateAsync(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Name)
+        result
+            .ShouldHaveValidationErrorFor(x => x.Name)
             .WithErrorMessage("Name must not exceed 100 characters.");
     }
 
@@ -140,8 +140,7 @@ public sealed class CustomerFormDtoValidatorTests
         TestValidationResult<CustomerFormDto> result = await _validator.TestValidateAsync(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Email)
-            .WithErrorMessage("Email is required.");
+        result.ShouldHaveValidationErrorFor(x => x.Email).WithErrorMessage("Email is required.");
     }
 
     [Theory]
@@ -164,7 +163,8 @@ public sealed class CustomerFormDtoValidatorTests
         TestValidationResult<CustomerFormDto> result = await _validator.TestValidateAsync(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Email)
+        result
+            .ShouldHaveValidationErrorFor(x => x.Email)
             .WithErrorMessage("Email must be a valid email address.");
     }
 
@@ -186,7 +186,8 @@ public sealed class CustomerFormDtoValidatorTests
         TestValidationResult<CustomerFormDto> result = await _validator.TestValidateAsync(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Email)
+        result
+            .ShouldHaveValidationErrorFor(x => x.Email)
             .WithErrorMessage("Email must not exceed 150 characters.");
     }
 
@@ -208,7 +209,8 @@ public sealed class CustomerFormDtoValidatorTests
         TestValidationResult<CustomerFormDto> result = await _validator.TestValidateAsync(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Email)
+        result
+            .ShouldHaveValidationErrorFor(x => x.Email)
             .WithErrorMessage("A customer with this email already exists.");
     }
 
@@ -231,8 +233,7 @@ public sealed class CustomerFormDtoValidatorTests
         TestValidationResult<CustomerFormDto> result = await _validator.TestValidateAsync(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Phone)
-            .WithErrorMessage("Phone is required.");
+        result.ShouldHaveValidationErrorFor(x => x.Phone).WithErrorMessage("Phone is required.");
     }
 
     [Fact]
@@ -253,7 +254,8 @@ public sealed class CustomerFormDtoValidatorTests
         TestValidationResult<CustomerFormDto> result = await _validator.TestValidateAsync(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Phone)
+        result
+            .ShouldHaveValidationErrorFor(x => x.Phone)
             .WithErrorMessage("Phone must not exceed 30 characters.");
     }
 
@@ -296,7 +298,8 @@ public sealed class CustomerFormDtoValidatorTests
         TestValidationResult<CustomerFormDto> result = await _validator.TestValidateAsync(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.CompanyName)
+        result
+            .ShouldHaveValidationErrorFor(x => x.CompanyName)
             .WithErrorMessage("Company name must not exceed 150 characters.");
     }
 
@@ -339,7 +342,8 @@ public sealed class CustomerFormDtoValidatorTests
         TestValidationResult<CustomerFormDto> result = await _validator.TestValidateAsync(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Address)
+        result
+            .ShouldHaveValidationErrorFor(x => x.Address)
             .WithErrorMessage("Address must not exceed 300 characters.");
     }
 

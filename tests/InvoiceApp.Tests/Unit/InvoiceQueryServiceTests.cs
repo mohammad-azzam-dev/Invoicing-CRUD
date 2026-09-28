@@ -70,10 +70,7 @@ public sealed class InvoiceQueryServiceTests
         ];
         fakeRepository.SetInvoices(expectedInvoices);
 
-        InvoiceQueryService service = new(
-            fakeRepository,
-            NullLogger<InvoiceQueryService>.Instance
-        );
+        InvoiceQueryService service = new(fakeRepository, NullLogger<InvoiceQueryService>.Instance);
         InvoiceQuery query = InvoiceQuery.Default;
 
         // Act
@@ -129,10 +126,7 @@ public sealed class InvoiceQueryServiceTests
         ];
         fakeRepository.SetInvoices(allInvoices);
 
-        InvoiceQueryService service = new(
-            fakeRepository,
-            NullLogger<InvoiceQueryService>.Instance
-        );
+        InvoiceQueryService service = new(fakeRepository, NullLogger<InvoiceQueryService>.Instance);
         InvoiceQuery query = InvoiceQuery.Default with { Status = InvoiceStatus.Sent };
 
         // Act
@@ -186,10 +180,7 @@ public sealed class InvoiceQueryServiceTests
         ];
         fakeRepository.SetInvoices(allInvoices);
 
-        InvoiceQueryService service = new(
-            fakeRepository,
-            NullLogger<InvoiceQueryService>.Instance
-        );
+        InvoiceQueryService service = new(fakeRepository, NullLogger<InvoiceQueryService>.Instance);
         InvoiceQuery query = InvoiceQuery.Default with { Search = "Acme" };
 
         // Act
@@ -223,10 +214,7 @@ public sealed class InvoiceQueryServiceTests
             .ToList();
         fakeRepository.SetInvoices(allInvoices);
 
-        InvoiceQueryService service = new(
-            fakeRepository,
-            NullLogger<InvoiceQueryService>.Instance
-        );
+        InvoiceQueryService service = new(fakeRepository, NullLogger<InvoiceQueryService>.Instance);
         InvoiceQuery query = InvoiceQuery.Default with
         {
             Page = 2,
@@ -249,10 +237,7 @@ public sealed class InvoiceQueryServiceTests
     {
         // Arrange
         FakeInvoiceRepository fakeRepository = new();
-        InvoiceQueryService service = new(
-            fakeRepository,
-            NullLogger<InvoiceQueryService>.Instance
-        );
+        InvoiceQueryService service = new(fakeRepository, NullLogger<InvoiceQueryService>.Instance);
         InvoiceQuery query = InvoiceQuery.Default;
 
         // Act

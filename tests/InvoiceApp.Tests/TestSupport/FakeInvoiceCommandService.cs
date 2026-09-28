@@ -8,7 +8,11 @@ public sealed class FakeInvoiceCommandService : IInvoiceCommandService
 {
     private readonly HashSet<int> _deletedIds = [];
     private readonly Dictionary<int, InvoiceStatus> _statusChanges = new();
-    private readonly List<(int Id, InvoiceFormDto Form, IReadOnlyList<LineItemFormDto> LineItems)> _savedInvoices = [];
+    private readonly List<(
+        int Id,
+        InvoiceFormDto Form,
+        IReadOnlyList<LineItemFormDto> LineItems
+    )> _savedInvoices = [];
     private Result<int>? _saveResult;
     private Result? _deleteResult;
     private Result? _changeStatusResult;
@@ -31,7 +35,11 @@ public sealed class FakeInvoiceCommandService : IInvoiceCommandService
 
     public bool WasDeleted(int id) => _deletedIds.Contains(id);
 
-    public (int Id, InvoiceFormDto Form, IReadOnlyList<LineItemFormDto> LineItems)? GetLastSavedInvoice()
+    public (
+        int Id,
+        InvoiceFormDto Form,
+        IReadOnlyList<LineItemFormDto> LineItems
+    )? GetLastSavedInvoice()
     {
         return _savedInvoices.Count > 0 ? _savedInvoices[^1] : null;
     }

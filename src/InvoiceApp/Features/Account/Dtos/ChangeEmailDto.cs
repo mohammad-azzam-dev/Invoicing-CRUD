@@ -1,5 +1,3 @@
 namespace InvoiceApp.Features.Account.Dtos;
 
-public record ChangeEmailDto(
-    string NewEmail
-);
+public record ChangeEmailDto(string NewEmail);

@@ -75,7 +75,11 @@ public sealed class CustomerService(
         }
     }
 
-    public async Task<Result> UpdateAsync(int id, CustomerFormDto form, CancellationToken ct = default)
+    public async Task<Result> UpdateAsync(
+        int id,
+        CustomerFormDto form,
+        CancellationToken ct = default
+    )
     {
         ValidationResult validationResult = await formValidator.ValidateAsync(form, ct);
         if (!validationResult.IsValid)
@@ -116,7 +120,11 @@ public sealed class CustomerService(
         if (!validationResult.IsValid)
         {
             string error = validationResult.Errors.First().ErrorMessage;
-            logger.LogWarning("Delete validation failed for customer {CustomerId}: {Error}", id, error);
+            logger.LogWarning(
+                "Delete validation failed for customer {CustomerId}: {Error}",
+                id,
+                error
+            );
             return Result.Failure(error);
         }
 

@@ -70,7 +70,13 @@ public sealed class InvoiceTestHelper : IAsyncDisposable
             NullLogger<InvoiceQueryService>.Instance
         );
 
-        return new InvoiceTestHelper(testDb, timeProvider, repository, commandService, queryService);
+        return new InvoiceTestHelper(
+            testDb,
+            timeProvider,
+            repository,
+            commandService,
+            queryService
+        );
     }
 
     /// <summary>
@@ -82,7 +88,12 @@ public sealed class InvoiceTestHelper : IAsyncDisposable
     )
     {
         await using AppDbContext db = await DbFactory.CreateDbContextAsync();
-        Customer customer = Customer.Create(name, "555-0001", $"{name.Replace(" ", "")}@test.com", companyName);
+        Customer customer = Customer.Create(
+            name,
+            "555-0001",
+            $"{name.Replace(" ", "")}@test.com",
+            companyName
+        );
         db.Customers.Add(customer);
         await db.SaveChangesAsync();
         return customer.Id;
@@ -97,17 +108,19 @@ public sealed class InvoiceTestHelper : IAsyncDisposable
         DateOnly? issueDate = null,
         DateOnly? dueDate = null,
         decimal taxRate = 10m,
-        List<(string Description, decimal Quantity, decimal UnitPrice, decimal DiscountPercent)>? lineItems = null
+        List<(
+            string Description,
+            decimal Quantity,
+            decimal UnitPrice,
+            decimal DiscountPercent
+        )>? lineItems = null
     )
     {
         await using AppDbContext db = await DbFactory.CreateDbContextAsync();
 
-        Invoice invoice = Invoice.Create(
-            customerId,
-            issueDate ?? FixedToday,
-            dueDate ?? FixedToday.AddDays(30),
-            taxRate
-        ).Value!;
+        Invoice invoice = Invoice
+            .Create(customerId, issueDate ?? FixedToday, dueDate ?? FixedToday.AddDays(30), taxRate)
+            .Value!;
 
         db.Invoices.Add(invoice);
         await db.SaveChangesAsync();
@@ -152,8 +165,8 @@ public sealed class InvoiceTestHelper : IAsyncDisposable
     public async Task<Invoice?> ReloadInvoiceAsync(int invoiceId)
     {
         await using AppDbContext db = await DbFactory.CreateDbContextAsync();
-        return await db.Invoices
-            .Include(i => i.LineItems)
+        return await db
+            .Invoices.Include(i => i.LineItems)
             .Include(i => i.Customer)
             .FirstOrDefaultAsync(i => i.Id == invoiceId);
     }

@@ -22,7 +22,9 @@ public sealed class CustomerListComponentTests : BunitContext
         // Arrange
         FakeCustomerService fakeService = new();
         fakeService.SetCustomers([]);
-        Services.AddSingleton<InvoiceApp.Features.Customers.Interfaces.ICustomerService>(fakeService);
+        Services.AddSingleton<InvoiceApp.Features.Customers.Interfaces.ICustomerService>(
+            fakeService
+        );
 
         // Act
         IRenderedComponent<CustomerListPage> cut = Render<CustomerListPage>();
@@ -36,12 +38,29 @@ public sealed class CustomerListComponentTests : BunitContext
     {
         // Arrange
         FakeCustomerService fakeService = new();
-        fakeService.SetCustomers(
-        [
-            new CustomerListItemDto(1, "Acme Corp", "John Doe", "Acme Corp", "john@acme.com", "555-1234", 3),
-            new CustomerListItemDto(2, "Jane Smith", "Jane Smith", null, "jane@example.com", "555-5678", 0),
+        fakeService.SetCustomers([
+            new CustomerListItemDto(
+                1,
+                "Acme Corp",
+                "John Doe",
+                "Acme Corp",
+                "john@acme.com",
+                "555-1234",
+                3
+            ),
+            new CustomerListItemDto(
+                2,
+                "Jane Smith",
+                "Jane Smith",
+                null,
+                "jane@example.com",
+                "555-5678",
+                0
+            ),
         ]);
-        Services.AddSingleton<InvoiceApp.Features.Customers.Interfaces.ICustomerService>(fakeService);
+        Services.AddSingleton<InvoiceApp.Features.Customers.Interfaces.ICustomerService>(
+            fakeService
+        );
 
         // Act
         IRenderedComponent<CustomerListPage> cut = Render<CustomerListPage>();
@@ -58,7 +77,9 @@ public sealed class CustomerListComponentTests : BunitContext
         // Arrange
         FakeCustomerService fakeService = new();
         fakeService.SetCustomers([]);
-        Services.AddSingleton<InvoiceApp.Features.Customers.Interfaces.ICustomerService>(fakeService);
+        Services.AddSingleton<InvoiceApp.Features.Customers.Interfaces.ICustomerService>(
+            fakeService
+        );
 
         // Act
         IRenderedComponent<CustomerListPage> cut = Render<CustomerListPage>();
@@ -73,7 +94,9 @@ public sealed class CustomerListComponentTests : BunitContext
         // Arrange
         FakeCustomerService fakeService = new();
         fakeService.SetCustomers([]);
-        Services.AddSingleton<InvoiceApp.Features.Customers.Interfaces.ICustomerService>(fakeService);
+        Services.AddSingleton<InvoiceApp.Features.Customers.Interfaces.ICustomerService>(
+            fakeService
+        );
 
         // Act
         IRenderedComponent<CustomerListPage> cut = Render<CustomerListPage>();
@@ -88,7 +111,9 @@ public sealed class CustomerListComponentTests : BunitContext
         // Arrange
         FakeCustomerService fakeService = new();
         fakeService.SetCustomers([]);
-        Services.AddSingleton<InvoiceApp.Features.Customers.Interfaces.ICustomerService>(fakeService);
+        Services.AddSingleton<InvoiceApp.Features.Customers.Interfaces.ICustomerService>(
+            fakeService
+        );
 
         // Act
         IRenderedComponent<CustomerListPage> cut = Render<CustomerListPage>();

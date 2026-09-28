@@ -36,7 +36,11 @@ public sealed class InvoiceEditTests
         );
         List<LineItemFormDto> sameLineItems = [new(lineItemId, "Original Item", 1m, 100m, 0m)];
 
-        Result<int> result = await helper.CommandService.SaveAsync(invoiceId, newForm, sameLineItems);
+        Result<int> result = await helper.CommandService.SaveAsync(
+            invoiceId,
+            newForm,
+            sameLineItems
+        );
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -66,8 +70,8 @@ public sealed class InvoiceEditTests
             customerId,
             lineItems:
             [
-                ("Item To Keep", 1m, 100m, 0m),     // Will update
-                ("Item To Remove", 2m, 50m, 0m),    // Will remove
+                ("Item To Keep", 1m, 100m, 0m), // Will update
+                ("Item To Remove", 2m, 50m, 0m), // Will remove
             ]
         );
 
@@ -79,8 +83,8 @@ public sealed class InvoiceEditTests
         InvoiceFormDto form = InvoiceTestHelper.CreateValidForm(customerId);
         List<LineItemFormDto> newLineItems =
         [
-            new(keepItemId, "Item To Keep - Updated", 3m, 150m, 10m),  // Update existing
-            new(0, "Brand New Item", 2m, 200m, 5m),                     // Add new
+            new(keepItemId, "Item To Keep - Updated", 3m, 150m, 10m), // Update existing
+            new(0, "Brand New Item", 2m, 200m, 5m), // Add new
             // removeItemId is NOT in the list -> it will be removed
         ];
 
@@ -119,11 +123,7 @@ public sealed class InvoiceEditTests
 
         int invoiceId = await helper.SeedInvoiceAsync(
             customerId,
-            lineItems:
-            [
-                ("Line 1", 1m, 100m, 0m),
-                ("Line 2", 2m, 50m, 5m),
-            ]
+            lineItems: [("Line 1", 1m, 100m, 0m), ("Line 2", 2m, 50m, 5m)]
         );
 
         // Act
@@ -242,7 +242,11 @@ public sealed class InvoiceEditTests
             new(invoice2LineId, "Hijacked Item", 5m, 500m, 0m), // This ID belongs to invoice2
         ];
 
-        Result<int> result = await helper.CommandService.SaveAsync(invoice1Id, form, linesWithForeignId);
+        Result<int> result = await helper.CommandService.SaveAsync(
+            invoice1Id,
+            form,
+            linesWithForeignId
+        );
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -285,7 +289,12 @@ public sealed class InvoiceEditTests
         );
 
         // Act
-        InvoiceFormDto newForm = new(customerId, FixedToday.AddDays(1), FixedToday.AddDays(31), 50m);
+        InvoiceFormDto newForm = new(
+            customerId,
+            FixedToday.AddDays(1),
+            FixedToday.AddDays(31),
+            50m
+        );
         List<LineItemFormDto> newLines = [new(0, "New Item", 5m, 500m, 0m)];
 
         Result<int> result = await helper.CommandService.SaveAsync(invoiceId, newForm, newLines);

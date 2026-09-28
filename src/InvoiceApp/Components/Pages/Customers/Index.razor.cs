@@ -59,7 +59,8 @@ public sealed partial class Index : IDisposable
                 Search: _searchText,
                 SortBy: MapSortField(args.OrderBy),
                 Descending: IsDescending(args.OrderBy),
-                Page: (args.Skip ?? 0) / (args.Top ?? Pagination.DefaultPageSize) + Pagination.DefaultPage,
+                Page: (args.Skip ?? 0) / (args.Top ?? Pagination.DefaultPageSize)
+                    + Pagination.DefaultPage,
                 PageSize: args.Top ?? Pagination.DefaultPageSize
             );
             PagedResult<CustomerListItemDto> result = await CustomerService.GetPagedAsync(query);

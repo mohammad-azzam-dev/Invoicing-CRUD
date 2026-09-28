@@ -18,7 +18,11 @@ public interface ICustomerRepository
         CancellationToken ct = default
     );
 
-    Task<bool> EmailExistsAsync(string email, int? excludeId = null, CancellationToken ct = default);
+    Task<bool> EmailExistsAsync(
+        string email,
+        int? excludeId = null,
+        CancellationToken ct = default
+    );
 
     Task<int> AddAsync(Customer customer, CancellationToken ct = default);
 

@@ -17,7 +17,8 @@ public sealed partial class Index
                 Status: _selectedStatus,
                 SortBy: MapSortField(args.OrderBy),
                 Descending: IsDescending(args.OrderBy),
-                Page: (args.Skip ?? 0) / (args.Top ?? Pagination.DefaultPageSize) + Pagination.DefaultPage,
+                Page: (args.Skip ?? 0) / (args.Top ?? Pagination.DefaultPageSize)
+                    + Pagination.DefaultPage,
                 PageSize: args.Top ?? Pagination.DefaultPageSize
             );
             PagedResult<InvoiceListItemDto> result = await QueryService.GetPagedAsync(query);

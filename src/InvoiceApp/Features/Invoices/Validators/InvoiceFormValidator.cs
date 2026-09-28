@@ -19,7 +19,9 @@ public sealed class InvoiceFormValidator(
     {
         if (lineItems.Count == 0)
         {
-            logger.LogWarning("Invoice validation failed: Invoice must have at least one line item");
+            logger.LogWarning(
+                "Invoice validation failed: Invoice must have at least one line item"
+            );
             return Result.Failure("Invoice must have at least one line item.");
         }
 
@@ -46,7 +48,11 @@ public sealed class InvoiceFormValidator(
         }
 
         IEnumerable<decimal> lineTotals = lineItems.Select(item =>
-            InvoiceCalculations.CalculateLineTotal(item.Quantity, item.UnitPrice, item.DiscountPercent)
+            InvoiceCalculations.CalculateLineTotal(
+                item.Quantity,
+                item.UnitPrice,
+                item.DiscountPercent
+            )
         );
         decimal subtotal = InvoiceCalculations.CalculateSubtotal(lineTotals);
         decimal total = InvoiceCalculations.CalculateTotal(subtotal, form.TaxRate);

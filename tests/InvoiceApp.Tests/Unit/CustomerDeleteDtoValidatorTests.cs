@@ -43,8 +43,7 @@ public sealed class CustomerDeleteDtoValidatorTests
         TestValidationResult<CustomerDeleteDto> result = await _validator.TestValidateAsync(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Id)
-            .WithErrorMessage("Customer not found.");
+        result.ShouldHaveValidationErrorFor(x => x.Id).WithErrorMessage("Customer not found.");
     }
 
     [Fact]
@@ -61,7 +60,8 @@ public sealed class CustomerDeleteDtoValidatorTests
         TestValidationResult<CustomerDeleteDto> result = await _validator.TestValidateAsync(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Id)
+        result
+            .ShouldHaveValidationErrorFor(x => x.Id)
             .WithErrorMessage("This customer has 3 invoice(s) and can't be deleted.");
     }
 
@@ -79,7 +79,8 @@ public sealed class CustomerDeleteDtoValidatorTests
         TestValidationResult<CustomerDeleteDto> result = await _validator.TestValidateAsync(dto);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Id)
+        result
+            .ShouldHaveValidationErrorFor(x => x.Id)
             .WithErrorMessage("This customer has 1 invoice(s) and can't be deleted.");
     }
 }

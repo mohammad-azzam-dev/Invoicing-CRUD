@@ -7,15 +7,10 @@ public sealed class ChangePasswordDtoValidator : AbstractValidator<ChangePasswor
 {
     public ChangePasswordDtoValidator()
     {
-        RuleFor(x => x.CurrentPassword)
-            .NotEmpty()
-            .WithMessage("Current password is required.");
+        RuleFor(x => x.CurrentPassword).NotEmpty().WithMessage("Current password is required.");
 
-        RuleFor(x => x.NewPassword)
-            .Cascade(CascadeMode.Stop)
-            .ApplyPasswordRules();
+        RuleFor(x => x.NewPassword).Cascade(CascadeMode.Stop).ApplyPasswordRules();
 
-        RuleFor(x => x.ConfirmPassword)
-            .ApplyConfirmPasswordRules(x => x.NewPassword);
+        RuleFor(x => x.ConfirmPassword).ApplyConfirmPasswordRules(x => x.NewPassword);
     }
 }
