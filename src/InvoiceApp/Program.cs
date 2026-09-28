@@ -6,9 +6,12 @@ using InvoiceApp.Data.Repositories;
 using InvoiceApp.Features.Account.Interfaces;
 using InvoiceApp.Features.Account.Services;
 using InvoiceApp.Features.Account.Validators;
+using InvoiceApp.Features.Customers.Interfaces;
+using InvoiceApp.Features.Customers.Services;
 using InvoiceApp.Features.Invoices.Interfaces;
 using InvoiceApp.Features.Invoices.Services;
 using InvoiceApp.Features.Invoices.Validators;
+using InvoiceApp.Settings;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.Sqlite;
@@ -16,6 +19,11 @@ using Microsoft.EntityFrameworkCore;
 using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Settings
+builder.Services.Configure<PaginationSettings>(
+    builder.Configuration.GetSection(PaginationSettings.SectionName)
+);
 
 // Add services to the container.
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
@@ -68,6 +76,9 @@ builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 builder.Services.AddScoped<InvoiceFormValidator>();
 builder.Services.AddScoped<IInvoiceQueryService, InvoiceQueryService>();
 builder.Services.AddScoped<IInvoiceCommandService, InvoiceCommandService>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 
 WebApplication app = builder.Build();
 

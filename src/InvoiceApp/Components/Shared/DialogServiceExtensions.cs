@@ -19,4 +19,14 @@ public static class DialogServiceExtensions
 
         return result == true;
     }
+
+    public static async Task AlertAsync(
+        this DialogService dialogService,
+        string message,
+        string title,
+        string buttonText = "OK"
+    )
+    {
+        await dialogService.Alert(message, title, new AlertOptions { OkButtonText = buttonText });
+    }
 }

@@ -167,6 +167,7 @@ public sealed class InvoiceCommandService(
     {
         if (id == 0)
         {
+            
             Result<Invoice> createResult = Invoice.Create(
                 form.CustomerId,
                 form.IssueDate,

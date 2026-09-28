@@ -13,20 +13,23 @@
         <div style="flex: 1"></div>
         <AuthorizeView>
             <Authorized>
-                <form action="@AppRoutes.Account.Logout" method="post">
-                    <AntiforgeryToken />
-                    <input type="hidden" name="ReturnUrl" value="@AppRoutes.Home" />
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="Logout" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
-                </form>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                    <a href="@AppRoutes.Profile" class="rz-button rz-button-sm rz-variant-filled rz-light rz-shade-default" style="text-decoration: none;">
+                        <RadzenIcon Icon="person" /> Profile
+                    </a>
+                    <form action="@AppRoutes.Account.Logout" method="post">
+                        <AntiforgeryToken />
+                        <input type="hidden" name="ReturnUrl" value="@AppRoutes.Home" />
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="Logout" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+                    </form>
+                </RadzenStack>
             </Authorized>
             <NotAuthorized>
-                <RadzenButton Text="Login" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" Click="@(() => NavigationManager.NavigateTo(AppRoutes.Account.Login))" />
+                <a href="@AppRoutes.Account.Login" class="rz-button rz-button-sm rz-variant-filled rz-light rz-shade-default" style="text-decoration: none;">
+                    Login
+                </a>
             </NotAuthorized>
         </AuthorizeView>
     </RadzenStack>
 </RadzenHeader>
 
-@code {
-    [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
-}

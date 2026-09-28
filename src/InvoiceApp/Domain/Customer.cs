@@ -31,4 +31,19 @@ public sealed class Customer
             Address = address?.Trim(),
         };
     }
+
+    public void Update(
+        string name,
+        string phone,
+        string email,
+        string? companyName = null,
+        string? address = null
+    )
+    {
+        Name = name.Trim();
+        Phone = phone.Trim();
+        Email = email.Trim();
+        CompanyName = companyName?.Trim();
+        Address = address?.Trim();
+    }
 }

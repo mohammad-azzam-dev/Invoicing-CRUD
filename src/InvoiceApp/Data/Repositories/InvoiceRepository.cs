@@ -111,7 +111,7 @@ public sealed class InvoiceRepository(
         await using AppDbContext db = await dbFactory.CreateDbContextAsync(ct);
         DateOnly today = DateOnly.FromDateTime(timeProvider.GetUtcNow().DateTime);
 
-        IQueryable<Invoice> baseQuery = db.Invoices.AsNoTracking();
+        IQueryable<Invoice> baseQuery = db.Invoices.AsNoTracking().Include(i => i.Customer);
         IQueryable<Invoice> filtered = ApplyFilters(baseQuery, query);
         int totalCount = await filtered.CountAsync(ct);
         IOrderedQueryable<Invoice> ordered = ApplySorting(filtered, query.SortBy, query.Descending);

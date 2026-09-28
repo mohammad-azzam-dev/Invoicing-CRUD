@@ -1,0 +1,114 @@
+@page "/profile"
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+<PageTitle>Profile - Invoice Manager</PageTitle>
+
+<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" class="rz-mb-4">
+    <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H1" class="rz-m-0">Profile</RadzenText>
+</RadzenStack>
+
+@if (_isLoading)
+{
+    <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" class="rz-p-8">
+        <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+    </RadzenStack>
+}
+else
+{
+    <RadzenRow Gap="2rem">
+        <RadzenColumn Size="12" SizeMD="6">
+            <RadzenCard>
+                <RadzenStack Gap="1rem">
+                    <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" class="rz-m-0">Change Email</RadzenText>
+
+                    <EditForm Model="@_emailForm" OnValidSubmit="@OnChangeEmailAsync">
+                        <DataAnnotationsValidator />
+
+                        <RadzenStack Gap="1rem">
+                            <RadzenFormField Text="Current Email" Variant="Variant.Outlined" Style="width: 100%;">
+                                <ChildContent>
+                                    <RadzenTextBox Value="@_currentEmail" Style="width: 100%;" Disabled="true" />
+                                </ChildContent>
+                            </RadzenFormField>
+
+                            <RadzenFormField Text="New Email" Variant="Variant.Outlined" Style="width: 100%;">
+                                <ChildContent>
+                                    <RadzenTextBox @bind-Value="@_emailForm.NewEmail" Style="width: 100%;" />
+                                </ChildContent>
+                                <Helper>
+                                    <ValidationMessage For="@(() => _emailForm.NewEmail)" />
+                                </Helper>
+                            </RadzenFormField>
+
+                            @if (!string.IsNullOrEmpty(_emailError))
+                            {
+                                <RadzenAlert AlertStyle="AlertStyle.Danger" ShowIcon="true" Variant="Variant.Flat" Size="AlertSize.Small">
+                                    @_emailError
+                                </RadzenAlert>
+                            }
+
+                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+                                <RadzenButton Text="Update Email" ButtonStyle="ButtonStyle.Primary" ButtonType="ButtonType.Submit" IsBusy="@_isChangingEmail" Disabled="@_isChangingEmail" />
+                            </RadzenStack>
+                        </RadzenStack>
+                    </EditForm>
+                </RadzenStack>
+            </RadzenCard>
+        </RadzenColumn>
+
+        <RadzenColumn Size="12" SizeMD="6">
+            <RadzenCard>
+                <RadzenStack Gap="1rem">
+                    <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" class="rz-m-0">Change Password</RadzenText>
+
+                    <EditForm Model="@_passwordForm" OnValidSubmit="@OnChangePasswordAsync">
+                        <DataAnnotationsValidator />
+
+                        <RadzenStack Gap="1rem">
+                            <RadzenFormField Text="Current Password" Variant="Variant.Outlined" Style="width: 100%;">
+                                <ChildContent>
+                                    <RadzenPassword @bind-Value="@_passwordForm.CurrentPassword" Style="width: 100%;" />
+                                </ChildContent>
+                                <Helper>
+                                    <ValidationMessage For="@(() => _passwordForm.CurrentPassword)" />
+                                </Helper>
+                            </RadzenFormField>
+
+                            <RadzenFormField Text="New Password" Variant="Variant.Outlined" Style="width: 100%;">
+                                <ChildContent>
+                                    <RadzenPassword @bind-Value="@_passwordForm.NewPassword" Style="width: 100%;" />
+                                </ChildContent>
+                                <Helper>
+                                    <ValidationMessage For="@(() => _passwordForm.NewPassword)" />
+                                </Helper>
+                            </RadzenFormField>
+
+                            <RadzenFormField Text="Confirm New Password" Variant="Variant.Outlined" Style="width: 100%;">
+                                <ChildContent>
+                                    <RadzenPassword @bind-Value="@_passwordForm.ConfirmPassword" Style="width: 100%;" />
+                                </ChildContent>
+                                <Helper>
+                                    <ValidationMessage For="@(() => _passwordForm.ConfirmPassword)" />
+                                </Helper>
+                            </RadzenFormField>
+
+                            @if (!string.IsNullOrEmpty(_passwordError))
+                            {
+                                <RadzenAlert AlertStyle="AlertStyle.Danger" ShowIcon="true" Variant="Variant.Flat" Size="AlertSize.Small">
+                                    @_passwordError
+                                </RadzenAlert>
+                            }
+
+                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+                                <RadzenButton Text="Update Password" ButtonStyle="ButtonStyle.Primary" ButtonType="ButtonType.Submit" IsBusy="@_isChangingPassword" Disabled="@_isChangingPassword" />
+                            </RadzenStack>
+                        </RadzenStack>
+                    </EditForm>
+                </RadzenStack>
+            </RadzenCard>
+        </RadzenColumn>
+    </RadzenRow>
+}

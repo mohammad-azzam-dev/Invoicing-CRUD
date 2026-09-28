@@ -14,12 +14,13 @@
             <RadzenColumn Size="12" SizeMD="6">
                 <RadzenFormField Text="Tax Rate (%)" Variant="Variant.Outlined" Style="width: 100%;">
                     <RadzenNumeric @bind-Value="Model.TaxRate"
+                                   TValue="decimal"
                                    Min="0"
                                    Max="100"
-                                   Step="0.5"
+                                   Step="0.5m"
                                    Disabled="@ReadOnly"
                                    Style="width: 100%;"
-                                   Change="@(async (decimal _) => await OnChange.InvokeAsync())" />
+                                   Change="@OnTaxRateChanged" />
                 </RadzenFormField>
             </RadzenColumn>
         </RadzenRow>
@@ -93,6 +94,12 @@
             Model.DueDate = DateOnly.FromDateTime(_dueDateValue.Value);
         }
 
+        await OnChange.InvokeAsync();
+    }
+
+    private async Task OnTaxRateChanged(decimal value)
+    {
+        Model.TaxRate = Math.Clamp(value, 0m, 100m);
         await OnChange.InvokeAsync();
     }
 }

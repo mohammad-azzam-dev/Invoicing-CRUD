@@ -1,0 +1,57 @@
+@page "/customers"
+@using Microsoft.AspNetCore.Authorization
+@using InvoiceApp.Features.Customers
+@using InvoiceApp.Features.Customers.Dtos
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+<PageTitle>Customers - Invoice Manager</PageTitle>
+
+<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" class="rz-mb-4">
+    <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H1" class="rz-m-0">Customers</RadzenText>
+    <RadzenButton Text="New Customer" Icon="add" ButtonStyle="ButtonStyle.Primary" Click="@OpenCreateDialogAsync" />
+</RadzenStack>
+
+<RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" class="rz-mb-4" Wrap="FlexWrap.Wrap">
+    <RadzenTextBox Placeholder="Search by name, company, email, or phone..."
+                   Style="width: 350px;"
+                   @oninput="@(args => OnSearchChanged(args.Value?.ToString()))" />
+</RadzenStack>
+
+<RadzenDataGrid @ref="_grid"
+                TItem="CustomerListItemDto"
+                Data="@_customers"
+                Count="@_count"
+                LoadData="@LoadDataAsync"
+                IsLoading="@_isLoading"
+                AllowSorting="true"
+                AllowPaging="true"
+                PageSize="@Pagination.DefaultPageSize"
+                PageSizeOptions="@PageSizeOptions"
+                PagerHorizontalAlign="HorizontalAlign.Right"
+                ShowPagingSummary="true"
+                PagingSummaryFormat="Showing {0} to {1} of {2} customers">
+    <EmptyTemplate>
+        <EmptyState Icon="people"
+                    Message="No customers found"
+                    Hint="@(string.IsNullOrWhiteSpace(_searchText) ? "Create your first customer to get started." : "Try adjusting your search criteria.")" />
+    </EmptyTemplate>
+    <LoadingTemplate>
+        <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" class="rz-p-8">
+            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+        </RadzenStack>
+    </LoadingTemplate>
+    <Columns>
+        <RadzenDataGridColumn TItem="CustomerListItemDto" Title="" Width="50px" Sortable="false" TextAlign="TextAlign.Center">
+            <Template Context="customer">
+                <ActionsMenu Items="@GetActionsForCustomer(customer)"
+                             OnAction="@(action => OnActionSelected(customer, action))" />
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="CustomerListItemDto" Property="DisplayName" Title="Display Name" />
+        <RadzenDataGridColumn TItem="CustomerListItemDto" Property="Name" Title="Name" />
+        <RadzenDataGridColumn TItem="CustomerListItemDto" Property="Email" Title="Email" />
+        <RadzenDataGridColumn TItem="CustomerListItemDto" Property="Phone" Title="Phone" Width="150px" />
+        <RadzenDataGridColumn TItem="CustomerListItemDto" Property="InvoiceCount" Title="Invoices" Width="100px" TextAlign="TextAlign.Center" />
+    </Columns>
+</RadzenDataGrid>

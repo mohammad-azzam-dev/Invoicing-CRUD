@@ -545,7 +545,7 @@ public sealed class InvoiceListComponentTests : BunitContext
     }
 
     [Fact]
-    public void MixedStatuses_DraftAndSentHaveStatusDropdowns()
+    public void MixedStatuses_AllInvoicesHaveActionMenus()
     {
         // Arrange
         FakeInvoiceQueryService fakeQueryService = new();
@@ -605,10 +605,13 @@ public sealed class InvoiceListComponentTests : BunitContext
         // Act
         IRenderedComponent<InvoiceListPage> cut = Render<InvoiceListPage>();
 
-        // Assert - Draft and Sent have transitions, so they show status dropdowns
-        // RadzenDropDown renders with rz-dropdown class, and there are dropdowns in the toolbar too
-        // So we just verify dropdowns exist (at least for filter + Draft + Sent rows)
-        IReadOnlyList<AngleSharp.Dom.IElement> dropdowns = cut.FindAll(".rz-dropdown");
-        dropdowns.Count.ShouldBeGreaterThanOrEqualTo(2); // At least Draft and Sent rows have status change dropdowns
+        // Assert - All invoices have action menus (at least View action)
+        // ActionsMenu renders with actions-button class
+        IReadOnlyList<AngleSharp.Dom.IElement> actionButtons = cut.FindAll(".actions-button");
+        actionButtons.Count.ShouldBe(4); // All 4 invoices have action menus
+
+        // All 4 statuses should be displayed as badges
+        IReadOnlyList<AngleSharp.Dom.IElement> badges = cut.FindAll(".rz-badge");
+        badges.Count.ShouldBe(4);
     }
 }

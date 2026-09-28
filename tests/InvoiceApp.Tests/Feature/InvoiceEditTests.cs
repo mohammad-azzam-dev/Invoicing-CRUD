@@ -111,7 +111,7 @@ public sealed class InvoiceEditTests
     }
 
     [Fact]
-    public async Task Edit_RemoveAllLines_InvoiceHasZeroLines()
+    public async Task Edit_RemoveAllLines_ReturnsFailure()
     {
         // Arrange
         await using InvoiceTestHelper helper = await InvoiceTestHelper.CreateAsync();
@@ -132,12 +132,9 @@ public sealed class InvoiceEditTests
 
         Result<int> result = await helper.CommandService.SaveAsync(invoiceId, form, emptyLines);
 
-        // Assert
-        result.IsSuccess.ShouldBeTrue();
-
-        Invoice? reloaded = await helper.ReloadInvoiceAsync(invoiceId);
-        reloaded.ShouldNotBeNull();
-        reloaded.LineItems.ShouldBeEmpty();
+        // Assert - Cannot save invoice with no line items
+        result.IsSuccess.ShouldBeFalse();
+        result.Error!.ShouldContain("at least one line item");
     }
 
     [Fact]

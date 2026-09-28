@@ -28,27 +28,16 @@
     public EventCallback OnChange { get; set; }
 
     private IReadOnlyList<CustomerLookupDto> _customers = [];
-    private bool _customersLoaded;
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadCustomersAsync();
+        _customers = await QueryService.GetCustomersForDropdownAsync();
     }
 
     private async Task OnDropdownOpen()
     {
-        await LoadCustomersAsync();
-    }
-
-    private async Task LoadCustomersAsync()
-    {
-        if (_customersLoaded)
-        {
-            return;
-        }
-
+        // Refresh customers each time dropdown opens to pick up newly added customers
         _customers = await QueryService.GetCustomersForDropdownAsync();
-        _customersLoaded = true;
     }
 
     private async Task OnValueChanged()

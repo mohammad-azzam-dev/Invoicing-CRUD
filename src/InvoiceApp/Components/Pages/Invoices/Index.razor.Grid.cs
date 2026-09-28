@@ -17,14 +17,26 @@ public sealed partial class Index
                 Status: _selectedStatus,
                 SortBy: MapSortField(args.OrderBy),
                 Descending: IsDescending(args.OrderBy),
-                Page: (args.Skip ?? 0) / (args.Top ?? DefaultPageSize) + DefaultPage,
-                PageSize: args.Top ?? DefaultPageSize
+                Page: (args.Skip ?? 0) / (args.Top ?? Pagination.DefaultPageSize) + Pagination.DefaultPage,
+                PageSize: args.Top ?? Pagination.DefaultPageSize
             );
             PagedResult<InvoiceListItemDto> result = await QueryService.GetPagedAsync(query);
             _invoices = result.Items;
             _count = result.TotalCount;
             _currentPage = query.Page;
             _currentPageSize = query.PageSize;
+        }
+        catch (Exception ex)
+        {
+            NotificationService.Notify(
+                NotificationSeverity.Error,
+                "Error",
+                "Failed to load invoices. Please try again."
+            );
+            _invoices = [];
+            _count = 0;
+            // Log the error for debugging
+            Console.Error.WriteLine($"LoadDataAsync error: {ex}");
         }
         finally
         {

@@ -17,6 +17,12 @@ public sealed class InvoiceFormValidator(
         CancellationToken ct = default
     )
     {
+        if (lineItems.Count == 0)
+        {
+            logger.LogWarning("Invoice validation failed: Invoice must have at least one line item");
+            return Result.Failure("Invoice must have at least one line item.");
+        }
+
         ValidationResult invoiceValidation = await invoiceValidator.ValidateAsync(form, ct);
         if (!invoiceValidation.IsValid)
         {
@@ -37,6 +43,18 @@ public sealed class InvoiceFormValidator(
                 logger.LogWarning("Line item validation failed: {Errors}", errors);
                 return Result.Failure(errors);
             }
+        }
+
+        IEnumerable<decimal> lineTotals = lineItems.Select(item =>
+            InvoiceCalculations.CalculateLineTotal(item.Quantity, item.UnitPrice, item.DiscountPercent)
+        );
+        decimal subtotal = InvoiceCalculations.CalculateSubtotal(lineTotals);
+        decimal total = InvoiceCalculations.CalculateTotal(subtotal, form.TaxRate);
+
+        if (total <= 0)
+        {
+            logger.LogWarning("Invoice validation failed: Invoice total must be greater than 0");
+            return Result.Failure("Invoice total must be greater than 0.");
         }
 
         return Result.Success();

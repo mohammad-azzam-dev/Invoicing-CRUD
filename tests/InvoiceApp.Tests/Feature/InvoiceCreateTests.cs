@@ -118,7 +118,7 @@ public sealed class InvoiceCreateTests
     }
 
     [Fact]
-    public async Task Create_WithNoLineItems_AllowedAsDraft()
+    public async Task Create_WithNoLineItems_ReturnsFailure()
     {
         // Arrange
         await using InvoiceTestHelper helper = await InvoiceTestHelper.CreateAsync();
@@ -131,16 +131,12 @@ public sealed class InvoiceCreateTests
         Result<int> result = await helper.CommandService.SaveAsync(0, form, lineItems);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
-
-        Invoice? reloaded = await helper.ReloadInvoiceAsync(result.Value);
-        reloaded.ShouldNotBeNull();
-        reloaded.Status.ShouldBe(InvoiceStatus.Draft);
-        reloaded.LineItems.ShouldBeEmpty();
+        result.IsSuccess.ShouldBeFalse();
+        result.Error!.ShouldContain("at least one line item");
     }
 
     [Fact]
-    public async Task Create_FreeItemWithPriceZero_SavesCorrectly()
+    public async Task Create_FreeItemOnlyWithPriceZero_ReturnsFailure()
     {
         // Arrange
         await using InvoiceTestHelper helper = await InvoiceTestHelper.CreateAsync();
@@ -155,20 +151,13 @@ public sealed class InvoiceCreateTests
         // Act
         Result<int> result = await helper.CommandService.SaveAsync(0, form, lineItems);
 
-        // Assert
-        result.IsSuccess.ShouldBeTrue();
-
-        Invoice? reloaded = await helper.ReloadInvoiceAsync(result.Value);
-        reloaded.ShouldNotBeNull();
-
-        LineItem freeItem = reloaded.LineItems.Single();
-        freeItem.Description.ShouldBe("Free Sample");
-        freeItem.UnitPrice.ShouldBe(0m);
-        freeItem.LineTotal().ShouldBe(0m);
+        // Assert - Invoice with only free items has total = 0, which is not allowed
+        result.IsSuccess.ShouldBeFalse();
+        result.Error!.ShouldContain("total must be greater than 0");
     }
 
     [Fact]
-    public async Task Create_LineItemWith100PercentDiscount_SavesWithZeroLineTotal()
+    public async Task Create_LineItemWith100PercentDiscount_ReturnsFailure()
     {
         // Arrange
         await using InvoiceTestHelper helper = await InvoiceTestHelper.CreateAsync();
@@ -183,15 +172,9 @@ public sealed class InvoiceCreateTests
         // Act
         Result<int> result = await helper.CommandService.SaveAsync(0, form, lineItems);
 
-        // Assert
-        result.IsSuccess.ShouldBeTrue();
-
-        Invoice? reloaded = await helper.ReloadInvoiceAsync(result.Value);
-        reloaded.ShouldNotBeNull();
-
-        LineItem discountedItem = reloaded.LineItems.Single();
-        discountedItem.DiscountPercent.ShouldBe(100m);
-        discountedItem.LineTotal().ShouldBe(0m);
+        // Assert - Invoice with only 100% discounted items has total = 0, which is not allowed
+        result.IsSuccess.ShouldBeFalse();
+        result.Error!.ShouldContain("total must be greater than 0");
     }
 
     [Fact]

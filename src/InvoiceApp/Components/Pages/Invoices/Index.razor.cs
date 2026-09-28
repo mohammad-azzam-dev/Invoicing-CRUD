@@ -1,7 +1,9 @@
 using InvoiceApp.Domain;
 using InvoiceApp.Features.Invoices.Dtos;
 using InvoiceApp.Features.Invoices.Interfaces;
+using InvoiceApp.Settings;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Options;
 using Radzen;
 using Radzen.Blazor;
 
@@ -24,6 +26,11 @@ public sealed partial class Index : IDisposable
     [Inject]
     private NavigationManager Navigation { get; set; } = default!;
 
+    [Inject]
+    private IOptions<PaginationSettings> PaginationOptions { get; set; } = default!;
+
+    private PaginationSettings Pagination => PaginationOptions.Value;
+
     private IEnumerable<InvoiceListItemDto>? _invoices;
     private int _count;
     private bool _isLoading;
@@ -31,14 +38,12 @@ public sealed partial class Index : IDisposable
     private string? _searchText;
     private InvoiceStatus? _selectedStatus;
     private Timer? _debounceTimer;
-    private int _currentPage = DefaultPage;
-    private int _currentPageSize = DefaultPageSize;
+    private int _currentPage;
+    private int _currentPageSize;
 
     private RadzenDataGrid<InvoiceListItemDto>? _grid;
 
-    private const int DefaultPage = 1;
-    private const int DefaultPageSize = 10;
-    private static readonly IReadOnlyList<int> PageSizeOptions = [DefaultPageSize, 20, 50];
+    private IReadOnlyList<int> PageSizeOptions => Pagination.PageSizeOptions;
 
     public void Dispose()
     {

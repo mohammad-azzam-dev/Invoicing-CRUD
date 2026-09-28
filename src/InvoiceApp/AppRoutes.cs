@@ -9,6 +9,8 @@ public static class AppRoutes
 {
     public const string Home = "/";
     public const string Invoices = "/invoices";
+    public const string Customers = "/customers";
+    public const string Profile = "/profile";
     public const string NotFound = "/not-found";
     public const string Error = "/error";
 

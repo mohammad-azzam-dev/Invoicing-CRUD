@@ -34,12 +34,22 @@ public partial class InvoiceForm
     private bool _isSaving;
     private bool _hasUnsavedChanges;
     private bool _isReadOnly;
+    private int _loadedId = -1;
 
     private bool _isCreateMode => Id == 0;
     private string PageTitle => _isCreateMode ? "New Invoice" : (_invoice?.Number ?? "Invoice");
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
+        // Only reload if the Id parameter changed (handles navigation from /new to /id)
+        if (_loadedId == Id)
+        {
+            return;
+        }
+
+        _loadedId = Id;
+        _isLoading = true;
+
         if (!_isCreateMode)
         {
             _invoice = await QueryService.GetDetailsAsync(Id);
@@ -51,7 +61,16 @@ public partial class InvoiceForm
                 _isReadOnly = !_invoice.CanEdit;
             }
         }
+        else
+        {
+            // Reset form for create mode
+            _invoice = null;
+            _formModel = new InvoiceFormModel();
+            _lineItems = [];
+            _isReadOnly = false;
+        }
 
+        _hasUnsavedChanges = false;
         _isLoading = false;
     }
 

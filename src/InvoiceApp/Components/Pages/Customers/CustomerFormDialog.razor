@@ -1,0 +1,75 @@
+@using InvoiceApp.Features.Customers.Dtos
+
+<RadzenStack Gap="1rem">
+    @if (_isLoading)
+    {
+        <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" class="rz-p-8">
+            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+        </RadzenStack>
+    }
+    else
+    {
+        <EditForm Model="@_form" OnValidSubmit="@OnSubmitAsync">
+            <DataAnnotationsValidator />
+
+            <RadzenStack Gap="1rem">
+                <RadzenFormField Text="Name" Variant="Variant.Outlined" Style="width: 100%;">
+                    <ChildContent>
+                        <RadzenTextBox @bind-Value="@_form.Name" Style="width: 100%;" />
+                    </ChildContent>
+                    <Helper>
+                        <ValidationMessage For="@(() => _form.Name)" />
+                    </Helper>
+                </RadzenFormField>
+
+                <RadzenFormField Text="Company Name (optional)" Variant="Variant.Outlined" Style="width: 100%;">
+                    <ChildContent>
+                        <RadzenTextBox @bind-Value="@_form.CompanyName" Style="width: 100%;" />
+                    </ChildContent>
+                    <Helper>
+                        <ValidationMessage For="@(() => _form.CompanyName)" />
+                    </Helper>
+                </RadzenFormField>
+
+                <RadzenFormField Text="Email" Variant="Variant.Outlined" Style="width: 100%;">
+                    <ChildContent>
+                        <RadzenTextBox @bind-Value="@_form.Email" Style="width: 100%;" />
+                    </ChildContent>
+                    <Helper>
+                        <ValidationMessage For="@(() => _form.Email)" />
+                    </Helper>
+                </RadzenFormField>
+
+                <RadzenFormField Text="Phone" Variant="Variant.Outlined" Style="width: 100%;">
+                    <ChildContent>
+                        <RadzenTextBox @bind-Value="@_form.Phone" Style="width: 100%;" />
+                    </ChildContent>
+                    <Helper>
+                        <ValidationMessage For="@(() => _form.Phone)" />
+                    </Helper>
+                </RadzenFormField>
+
+                <RadzenFormField Text="Address (optional)" Variant="Variant.Outlined" Style="width: 100%;">
+                    <ChildContent>
+                        <RadzenTextArea @bind-Value="@_form.Address" Rows="3" Style="width: 100%;" />
+                    </ChildContent>
+                    <Helper>
+                        <ValidationMessage For="@(() => _form.Address)" />
+                    </Helper>
+                </RadzenFormField>
+
+                @if (!string.IsNullOrEmpty(_errorMessage))
+                {
+                    <RadzenAlert AlertStyle="AlertStyle.Danger" ShowIcon="true" Variant="Variant.Flat" Size="AlertSize.Small">
+                        @_errorMessage
+                    </RadzenAlert>
+                }
+
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" JustifyContent="JustifyContent.End">
+                    <RadzenButton Text="Cancel" ButtonStyle="ButtonStyle.Light" Click="@OnCancelAsync" Disabled="@_isSaving" />
+                    <RadzenButton Text="Save" ButtonStyle="ButtonStyle.Primary" ButtonType="ButtonType.Submit" IsBusy="@_isSaving" Disabled="@_isSaving" />
+                </RadzenStack>
+            </RadzenStack>
+        </EditForm>
+    }
+</RadzenStack>
